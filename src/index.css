@@ -1,0 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --wm-yellow: #facc15;
+  --wm-black: #050505;
+}
+
+body {
+  background-color: var(--wm-black);
+  color: white;
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+}
+
+.wm-card {
+  background: #111;
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: 1.5rem;
+  padding: 1.5rem;
+}
+
+.btn-wm {
+  background: var(--wm-yellow);
+  color: black;
+  font-weight: 900;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.75rem;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+}
