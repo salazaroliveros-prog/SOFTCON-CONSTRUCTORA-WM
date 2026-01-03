@@ -1,0 +1,20 @@
+{
+  "short_name": "SOFTCON-WM",
+  "name": "SOFTCON-MYS-CONSTRU-WM",
+  "icons": [
+    {
+      "src": "/REDISEÑO_ICONO.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "/REDISEÑO_ICONO.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#1a202c",
+  "background_color": "#ffffff"
+}

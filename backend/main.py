@@ -38,6 +38,7 @@ from backend import models
 from backend.utils.pdf_gen import generar_pdf_presupuesto, generar_pdf_presupuesto_profesional
 from backend.utils.normas import calcular_insumos_por_renglon, calcular_insumos_por_renglon_detallado
 from backend.utils.matriz_maestra import obtener_matriz_renglones_maestra
+from backend.utils.csv_import import procesar_csv_maestro
 from backend.whatsapp_service import enviar_resumen_diario
 app = FastAPI()
 
@@ -1370,6 +1371,27 @@ def login_alias(
     db: Session = Depends(get_db),
 ):
     return auth_login(form_data=form_data, db=db)
+
+
+@app.post("/admin/import/csv-maestro", dependencies=[Depends(RoleChecker(["admin"]))])
+@app.post("/importar/maestro", dependencies=[Depends(RoleChecker(["admin"]))])
+async def admin_import_csv_maestro(
+    file: UploadFile = File(...),
+    departamento_default: str = Form("Guatemala"),
+    estado_oc: str = Form("entregada"),
+    db: Session = Depends(get_db),
+):
+    content = await file.read()
+    try:
+        return procesar_csv_maestro(
+            content,
+            db,
+            departamento_default=str(departamento_default),
+            estado_oc=str(estado_oc),
+        )
+    except Exception as exc:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=str(exc))
 
 
 @app.get("/finanzas/flujo-caja-maestro", dependencies=[Depends(RoleChecker(["admin"]))])
