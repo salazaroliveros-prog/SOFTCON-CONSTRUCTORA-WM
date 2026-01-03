@@ -1394,6 +1394,27 @@ async def admin_import_csv_maestro(
         raise HTTPException(status_code=400, detail=str(exc))
 
 
+# Alias compatible con el frontend: POST /importar/maestro
+@app.post("/importar/maestro", dependencies=[Depends(RoleChecker(["admin"]))])
+async def importar_maestro_alias(
+    file: UploadFile = File(...),
+    departamento_default: str = Form("Guatemala"),
+    estado_oc: str = Form("entregada"),
+    db: Session = Depends(get_db),
+):
+    content = await file.read()
+    try:
+        return procesar_csv_maestro(
+            content,
+            db,
+            departamento_default=str(departamento_default),
+            estado_oc=str(estado_oc),
+        )
+    except Exception as exc:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=str(exc))
+
+
 @app.get("/finanzas/flujo-caja-maestro", dependencies=[Depends(RoleChecker(["admin"]))])
 def ver_caja_maestra(db: Session = Depends(get_db)):
     return {"data": "Información altamente confidencial"}

@@ -2,9 +2,8 @@ import axios from 'axios';
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8000',
-  headers: {
-    'Content-Type': 'application/json',
-  },
+  // Don't force Content-Type globally: uploads (FormData) need the browser
+  // to set multipart boundaries, and Axios will set JSON headers as needed.
 });
 
 // Interceptor para inyectar el Token JWT en cada petición (Web)

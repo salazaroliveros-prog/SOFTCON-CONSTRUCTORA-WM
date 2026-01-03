@@ -13,6 +13,7 @@ import {
 import api from '../api';
 import AlertaPanel from '../components/AlertaPanel.jsx';
 import GaleriaObra from '../components/GaleriaObra.jsx';
+import ImportadorCSV from '../components/ImportadorCSV.jsx';
 
 const StatCard = ({ title, value, color }) => (
   <div
@@ -138,6 +139,8 @@ const DashboardFinal = ({ proyectoId }) => {
               </button>
             </div>
           </div>
+
+          <ImportadorCSV />
         </div>
       </div>
     </div>
