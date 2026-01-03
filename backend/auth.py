@@ -25,15 +25,17 @@ def _get_secret_key() -> str:
         raise RuntimeError(
             "Missing SECRET_KEY env var. Set it in backend/.env (do not hardcode in code)."
         )
-    return secret
+    return secret.strip().strip('"').strip("'")
 
 
 def _get_algorithm() -> str:
-    return os.getenv("JWT_ALGORITHM", "HS256")
+    value = os.getenv("JWT_ALGORITHM", "HS256")
+    return value.strip().strip('"').strip("'")
 
 
 def _get_expire_minutes() -> int:
     raw = os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "480")
+    raw = raw.strip().strip('"').strip("'")
     try:
         value = int(raw)
     except ValueError as exc:

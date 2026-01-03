@@ -41,6 +41,8 @@ if _root_env.exists():
     load_dotenv(dotenv_path=_root_env, override=False)
 
 db_url = os.getenv("DATABASE_URL")
+if db_url:
+    db_url = db_url.strip().strip('"').strip("'")
 if db_url and (db_url.startswith("http://") or db_url.startswith("https://")):
     recovered = _recover_db_url_from_backend_env(_backend_env)
     if recovered:
