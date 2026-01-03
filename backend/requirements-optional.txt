@@ -1,0 +1,3 @@
+# Optional integrations
+# Install only if you enable WhatsApp/Twilio features.
+twilio>=8.14.0,<9.0.0
