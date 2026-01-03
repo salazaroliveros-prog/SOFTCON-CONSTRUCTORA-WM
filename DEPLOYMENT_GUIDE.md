@@ -20,15 +20,25 @@
 3. Railway detectará automáticamente el `Dockerfile` en la raíz
 
 ### Paso 2: Configurar Variables de Entorno
+
+**Generar secretos seguros:**
+```bash
+# En tu terminal local, genera dos secretos aleatorios:
+openssl rand -hex 32  # Para SECRET_KEY
+openssl rand -hex 32  # Para BOOTSTRAP_ADMIN_TOKEN
+```
+
 En Railway → Settings → Variables:
 
 ```bash
 # BASE DE DATOS (Requerido)
-DATABASE_URL=postgresql://postgres.xxx:password@aws-0-xxx.pooler.supabase.com:6543/postgres?sslmode=require
+# Copiar de Supabase Settings → Database → Connection String (Pooler)
+DATABASE_URL=postgresql://postgres.<your-ref>:<your-password>@aws-0-<your-region>.pooler.supabase.com:6543/postgres?sslmode=require
 
 # SEGURIDAD (Requerido)
-SECRET_KEY=tu-secreto-super-largo-y-aleatorio-aqui
-BOOTSTRAP_ADMIN_TOKEN=otro-token-super-seguro-para-crear-admin
+# Generar con: openssl rand -hex 32
+SECRET_KEY=<genera-un-secreto-de-64-caracteres-hexadecimales>
+BOOTSTRAP_ADMIN_TOKEN=<genera-otro-secreto-de-64-caracteres-hexadecimales>
 
 # JWT (Opcional)
 JWT_ALGORITHM=HS256
