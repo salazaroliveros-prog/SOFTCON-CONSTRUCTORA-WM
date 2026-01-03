@@ -15,6 +15,8 @@ RUN pip install --no-cache-dir -r /app/backend/requirements.txt
 
 COPY backend /app/backend
 
-EXPOSE 8000
+# Railway's HTTP proxy commonly targets the container's exposed port.
+# Keep it aligned with the PORT value the runtime provides (often 8080).
+EXPOSE 8080
 
-CMD ["sh", "-c", "uvicorn backend.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
+CMD ["sh", "-c", "uvicorn backend.main:app --host 0.0.0.0 --port ${PORT:-8080}"]
