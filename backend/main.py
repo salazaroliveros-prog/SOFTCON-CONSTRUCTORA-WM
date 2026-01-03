@@ -9,6 +9,7 @@ import os
 import datetime
 import uuid
 import pathlib
+import logging
 import shutil
 from backend.database import SessionLocal, engine, get_db
 from backend.ia_auditor import (
@@ -83,8 +84,13 @@ class InyectarMatrizMaestraRequest(BaseModel):
 
 
 _uploads_dir = pathlib.Path(__file__).resolve().parent / "uploads"
-_uploads_dir.mkdir(parents=True, exist_ok=True)
-app.mount("/uploads", StaticFiles(directory=str(_uploads_dir)), name="uploads")
+try:
+    _uploads_dir.mkdir(parents=True, exist_ok=True)
+    app.mount("/uploads", StaticFiles(directory=str(_uploads_dir)), name="uploads")
+except Exception as exc:
+    # On some managed platforms, the filesystem may be read-only or restricted.
+    # The API should still start even if uploads are unavailable.
+    logging.getLogger("uvicorn.error").warning("Uploads disabled: %s", exc)
 
 @app.on_event("startup")
 def _startup_init_db():

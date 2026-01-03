@@ -1,10 +1,9 @@
 import os
 import pathlib
-
-from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+from dotenv import load_dotenv
 
 _backend_env = pathlib.Path(__file__).resolve().parent / ".env"
 _root_env = pathlib.Path(__file__).resolve().parents[1] / ".env"
@@ -47,32 +46,36 @@ if db_url and (db_url.startswith("http://") or db_url.startswith("https://")):
     if recovered:
         db_url = recovered
 
-engine = None
-SessionLocal = None
+if not db_url:
+    raise RuntimeError(
+        "Missing DATABASE_URL env var. Set it to your Supabase Postgres connection string."
+    )
+
+if db_url.startswith("http://") or db_url.startswith("https://"):
+    raise RuntimeError(
+        "DATABASE_URL appears to be an HTTP URL. It must be a Postgres connection string starting with postgresql://"
+    )
+
+# SQLAlchemy expects 'postgresql://' (but some providers give 'postgres://')
+if db_url.startswith("postgres://"):
+    db_url = db_url.replace("postgres://", "postgresql://", 1)
+
+# Supabase Postgres requires SSL. If sslmode is missing, default to require.
+if ".supabase.co" in db_url and "sslmode=" not in db_url:
+    db_url = db_url + ("&" if "?" in db_url else "?") + "sslmode=require"
+
+engine = create_engine(
+    db_url,
+    pool_pre_ping=True,
+    connect_args={
+        # Fail fast if Supabase is unreachable; avoids the container hanging on startup.
+        "connect_timeout": int(os.getenv("DB_CONNECT_TIMEOUT", "10")),
+    },
+)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
-if db_url:
-    if db_url.startswith("http://") or db_url.startswith("https://"):
-        # Do not crash import-time: allow the app to start and surface a clearer error on DB usage.
-        db_url = None
-    else:
-        # SQLAlchemy expects 'postgresql://' (but some providers give 'postgres://')
-        if db_url.startswith("postgres://"):
-            db_url = db_url.replace("postgres://", "postgresql://", 1)
-
-        # Supabase Postgres requires SSL. If sslmode is missing, default to require.
-        if ".supabase.co" in db_url and "sslmode=" not in db_url:
-            db_url = db_url + ("&" if "?" in db_url else "?") + "sslmode=require"
-
-        engine = create_engine(db_url)
-        SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
 def get_db():
-    if SessionLocal is None:
-        raise RuntimeError(
-            "Database is not configured. Set DATABASE_URL to your Supabase Postgres connection string."
-        )
-
     db = SessionLocal()
     try:
         yield db
