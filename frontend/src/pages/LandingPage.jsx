@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const logoModules = import.meta.glob('../assets/REDISEÑO_ICONO.jpg', {
   eager: true,
@@ -8,6 +9,8 @@ const logoModules = import.meta.glob('../assets/REDISEÑO_ICONO.jpg', {
 const logoWM = Object.values(logoModules)?.[0] ?? null;
 
 const LandingPage = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="bg-slate-50 min-h-screen">
       {/* Hero Section */}
@@ -17,7 +20,10 @@ const LandingPage = () => {
         ) : (
           <div className="font-black text-slate-900">SOFTCON</div>
         )}
-        <button className="bg-blue-600 text-white px-6 py-2 rounded-full font-bold">
+        <button
+          className="bg-blue-600 text-white px-6 py-2 rounded-full font-bold"
+          onClick={() => navigate('/login')}
+        >
           Probar Demo
         </button>
       </nav>
