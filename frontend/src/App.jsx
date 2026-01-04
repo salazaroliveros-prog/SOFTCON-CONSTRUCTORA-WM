@@ -21,65 +21,38 @@ function parseJwt(token) {
   }
 }
 
-function RequireAuth({ children }) {
-  const token = localStorage.getItem("token") || localStorage.getItem("userToken");
-  if (!token) return <Navigate to="/login" replace />;
-  return children;
-}
-
-function RequireAdmin({ children }) {
-  const token = localStorage.getItem("token") || localStorage.getItem("userToken");
-  const payload = token ? parseJwt(token) : null;
-  const rol = payload?.rol;
-  if (!token) return <Navigate to="/login" replace />;
-  if (rol !== "admin") return <Navigate to="/" replace />;
-  return children;
-}
-
-function Layout() {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-
-  return (
-    <div className="min-h-screen bg-slate-950 text-slate-100">
-      <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-
-      <div className="md:pl-64">
-        <AppShell title="" onOpenSidebar={() => setSidebarOpen(true)}>
-          <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/proyectos" element={<Proyectos />} />
-            <Route path="/inventarios" element={<Inventarios />} />
-            <Route path="/finanzas-personales" element={<FinanzasPersonales />} />
-            <Route
-              path="/admin/usuarios"
-              element={
-                <RequireAdmin>
-                  <AdminUsuariosPage />
-                </RequireAdmin>
-              }
-            />
-          </Routes>
-        </AppShell>
-      </div>
-    </div>
-  );
-}
-
 function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem("token"));
+  const user = isAuthenticated ? parseJwt(localStorage.getItem("token")) : null;
+
   return (
     <Router>
       <Routes>
-        <Route path="/landing" element={<LandingPage />} />
-        <Route path="/login" element={<LoginPage />} />
+        {/* Rutas Públicas */}
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/login" element={<LoginPage onLogin={() => setIsAuthenticated(true)} />} />
         <Route path="/register" element={<RegisterPage />} />
-        <Route
-          path="/*"
-          element={
-            <RequireAuth>
-              <Layout />
-            </RequireAuth>
-          }
+
+        {/* Rutas Privadas (Protegidas) */}
+        <Route 
+          path="/dashboard/*" 
+          element={isAuthenticated ? (
+            <AppShell user={user}>
+              <Routes>
+                <Route index element={<Dashboard />} />
+                <Route path="proyectos" element={<Proyectos />} />
+                <Route path="finanzas" element={<FinanzasPersonales />} />
+                <Route path="inventarios" element={<Inventarios />} />
+                {user?.rol === 'admin' && <Route path="usuarios" element={<AdminUsuariosPage />} />}
+              </Routes>
+            </AppShell>
+          ) : (
+            <Navigate to="/login" />
+          )} 
         />
+
+        {/* Redirección por defecto */}
+        <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </Router>
   );

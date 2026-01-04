@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../index.css"; // Usa index.css para estilos globales y glassmorphism
 
-export default function LoginPage() {
+export default function LoginPage({ onLogin }) {
   const [isFlipped, setIsFlipped] = useState(false);
   const [usuario, setUsuario] = useState("");
   const [password, setPassword] = useState("");
@@ -17,12 +17,26 @@ export default function LoginPage() {
     e.preventDefault();
     setLoading(true);
     setError("");
+
+    const apiUrl = import.meta.env.VITE_API_URL;
+
     try {
-      // Aquí va la lógica real de autenticación
-      // await api.post("/auth/login", { usuario, password });
-      navigate("/dashboard");
+      const response = await fetch(`${apiUrl}/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: usuario, password }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        localStorage.setItem("token", data.access_token);
+        if (typeof onLogin === "function") onLogin(); // Notifica a App.jsx que el usuario está autenticado
+        navigate("/dashboard");
+      } else {
+        setError("Credenciales inválidas. Verifica tu correo y contraseña.");
+      }
     } catch (err) {
-      setError("Credenciales inválidas");
+      setError("Error de conexión con el servidor de SOFTCON-WM.");
     } finally {
       setLoading(false);
     }
