@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import api from "../api";
+
 import AuthLayout from "../components/layout/AuthLayout.jsx";
 import { Card, CardBody } from "../components/ui/Card.jsx";
 import { Input } from "../components/ui/Input.jsx";
@@ -70,7 +72,7 @@ export default function LoginPage() {
             <div className="pt-2 text-sm text-slate-300">
               ¿No tienes cuenta?{" "}
               <a
-                className="text-sky-300 hover:text-sky-200 underline underline-offset-4"
+                className="underline underline-offset-4"
                 href="/register"
               >
                 Solicitar acceso
