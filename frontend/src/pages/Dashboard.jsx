@@ -16,6 +16,8 @@ import GaleriaObra from "../components/GaleriaObra.jsx";
 import ImportadorCSV from "../components/ImportadorCSV.jsx";
 import { Card, CardBody } from "../components/ui/Card";
 import { Button } from "../components/ui/Button";
+import { useEffect } from "react";
+import { supabase } from "../supabaseClient"; // Ajusta la ruta según tu proyecto
 
 const money = (value) => {
   const n = Number(value ?? 0);
@@ -214,6 +216,49 @@ const Dashboard = ({ proyectoId } = {}) => {
       },
     ];
   }, [metricas]);
+
+  useEffect(() => {
+    if (!("geolocation" in navigator)) {
+      console.error("Geolocalización no soportada");
+      return;
+    }
+
+    const watcher = navigator.geolocation.watchPosition(
+      async (position) => {
+        const { latitude, longitude } = position.coords;
+
+        // Validación de usuario
+        if (!user?.id) {
+          console.error("Usuario no autenticado");
+          return;
+        }
+
+        // Enviamos la ubicación a Supabase
+        const { error } = await supabase
+          .from("rastreo_gps")
+          .insert({
+            user_id: user.id,
+            latitud: latitude,
+            longitud: longitude,
+            timestamp: new Date().toISOString(),
+          });
+
+        if (error) {
+          console.error("Error guardando GPS:", error);
+          // Aquí puedes agregar trazabilidad o alertas si es crítico
+        }
+      },
+      (err) => {
+        console.error("Error de geolocalización:", err);
+        // Aquí puedes agregar trazabilidad o alertas si es crítico
+      },
+      { enableHighAccuracy: true, distanceFilter: 50 }
+    );
+
+    return () => {
+      navigator.geolocation.clearWatch(watcher);
+    };
+  }, [user?.id]);
 
   if (!proyectoId) return <DashboardFinal proyectoId={proyectoId} />;
 

@@ -1,0 +1,446 @@
+[1mdiff --git a/backend/requirements-optional.txt b/backend/requirements-optional.txt[m
+[1mdeleted file mode 100644[m
+[1mindex fbec1c5..0000000[m
+[1m--- a/backend/requirements-optional.txt[m
+[1m+++ /dev/null[m
+[36m@@ -1,3 +0,0 @@[m
+[31m-# Optional integrations[m
+[31m-# Install only if you enable WhatsApp/Twilio features.[m
+[31m-twilio>=8.14.0,<9.0.0[m
+[1mdiff --git a/backend/requirements.txt b/backend/requirements.txt[m
+[1mdeleted file mode 100644[m
+[1mindex 07c0066..0000000[m
+[1m--- a/backend/requirements.txt[m
+[1m+++ /dev/null[m
+[36m@@ -1,36 +0,0 @@[m
+[31m-# FastAPI and ASGI Server[m
+[31m-fastapi>=0.100.0[m
+[31m-uvicorn[standard]>=0.23.0[m
+[31m-[m
+[31m-# Database[m
+[31m-sqlalchemy>=2.0.0[m
+[31m-psycopg2-binary>=2.9.0[m
+[31m-alembic>=1.12.0[m
+[31m-[m
+[31m-# Authentication & Security[m
+[31m-python-jose[cryptography]>=3.3.0[m
+[31m-passlib[bcrypt]>=1.7.4[m
+[31m-python-multipart>=0.0.6[m
+[31m-[m
+[31m-# AI/LLM Integration[m
+[31m-openai>=1.0.0[m
+[31m-[m
+[31m-# Data Validation[m
+[31m-pydantic>=2.0.0[m
+[31m-pydantic-settings>=2.0.0[m
+[31m-[m
+[31m-# Environment Variables[m
+[31m-python-dotenv>=1.0.0[m
+[31m-[m
+[31m-# Utilities[m
+[31m-fastapi-utils>=0.2.1[m
+[31m-[m
+[31m-# PDF Generation (if needed)[m
+[31m-reportlab>=4.0.0[m
+[31m-pypdf>=3.0.0[m
+[31m-[m
+[31m-# WhatsApp Integration (Twilio)[m
+[31m-twilio>=8.0.0[m
+[31m-[m
+[31m-# Date/Time Utilities[m
+[31m-python-dateutil>=2.8.0[m
+[1mdiff --git a/frontend/src/App.jsx b/frontend/src/App.jsx[m
+[1mindex f7d3082..89f000f 100644[m
+[1m--- a/frontend/src/App.jsx[m
+[1m+++ b/frontend/src/App.jsx[m
+[36m@@ -1,19 +1,20 @@[m
+[31m-import React from 'react';[m
+[31m-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';[m
+[31m-import Sidebar from './components/Sidebar.jsx';[m
+[31m-import Dashboard from './pages/Dashboard.jsx';[m
+[31m-import Proyectos from './pages/Proyectos.jsx';[m
+[31m-import FinanzasPersonales from './pages/FinanzasPersonales.jsx';[m
+[31m-import Inventarios from './pages/Inventarios.jsx';[m
+[31m-import LandingPage from './pages/LandingPage.jsx';[m
+[31m-import LoginPage from './pages/LoginPage.jsx';[m
+[31m-import RegisterPage from './pages/RegisterPage.jsx';[m
+[31m-import AdminUsuariosPage from './pages/AdminUsuariosPage.jsx';[m
+[32m+[m[32mimport React, { useState } from "react";[m
+[32m+[m[32mimport { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";[m
+[32m+[m[32mimport Sidebar from "./components/Sidebar.jsx";[m
+[32m+[m[32mimport Dashboard from "./pages/Dashboard.jsx";[m
+[32m+[m[32mimport Proyectos from "./pages/Proyectos.jsx";[m
+[32m+[m[32mimport FinanzasPersonales from "./pages/FinanzasPersonales.jsx";[m
+[32m+[m[32mimport Inventarios from "./pages/Inventarios.jsx";[m
+[32m+[m[32mimport LandingPage from "./pages/LandingPage.jsx";[m
+[32m+[m[32mimport LoginPage from "./pages/LoginPage.jsx";[m
+[32m+[m[32mimport RegisterPage from "./pages/RegisterPage.jsx";[m
+[32m+[m[32mimport AdminUsuariosPage from "./pages/AdminUsuariosPage.jsx";[m
+[32m+[m[32mimport AppShell from "./components/layout/AppShell.jsx";[m
+ [m
+ function parseJwt(token) {[m
+   try {[m
+[31m-    const payload = token.split('.')[1];[m
+[31m-    const json = atob(payload.replace(/-/g, '+').replace(/_/g, '/'));[m
+[32m+[m[32m    const payload = token.split(".")[1];[m
+[32m+[m[32m    const json = atob(payload.replace(/-/g, "+").replace(/_/g, "/"));[m
+     return JSON.parse(json);[m
+   } catch {[m
+     return null;[m
+[36m@@ -21,41 +22,45 @@[m [mfunction parseJwt(token) {[m
+ }[m
+ [m
+ function RequireAuth({ children }) {[m
+[31m-  const token = localStorage.getItem('token') || localStorage.getItem('userToken');[m
+[32m+[m[32m  const token = localStorage.getItem("token") || localStorage.getItem("userToken");[m
+   if (!token) return <Navigate to="/login" replace />;[m
+   return children;[m
+ }[m
+ [m
+ function RequireAdmin({ children }) {[m
+[31m-  const token = localStorage.getItem('token') || localStorage.getItem('userToken');[m
+[32m+[m[32m  const token = localStorage.getItem("token") || localStorage.getItem("userToken");[m
+   const payload = token ? parseJwt(token) : null;[m
+   const rol = payload?.rol;[m
+   if (!token) return <Navigate to="/login" replace />;[m
+[31m-  if (rol !== 'admin') return <Navigate to="/" replace />;[m
+[32m+[m[32m  if (rol !== "admin") return <Navigate to="/" replace />;[m
+   return children;[m
+ }[m
+ [m
+ function Layout() {[m
+[32m+[m[32m  const [sidebarOpen, setSidebarOpen] = useState(false);[m
+[32m+[m
+   return ([m
+[31m-    <div className="flex min-h-screen bg-gray-100">[m
+[31m-      <Sidebar />[m
+[32m+[m[32m    <div className="min-h-screen bg-slate-950 text-slate-100">[m
+[32m+[m[32m      <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />[m
+ [m
+[31m-      <main className="flex-1 p-8 ml-64">[m
+[31m-        <Routes>[m
+[31m-          <Route path="/" element={<Dashboard />} />[m
+[31m-          <Route path="/proyectos" element={<Proyectos />} />[m
+[31m-          <Route path="/inventarios" element={<Inventarios />} />[m
+[31m-          <Route path="/finanzas-personales" element={<FinanzasPersonales />} />[m
+[31m-          <Route[m
+[31m-            path="/admin/usuarios"[m
+[31m-            element={[m
+[31m-              <RequireAdmin>[m
+[31m-                <AdminUsuariosPage />[m
+[31m-              </RequireAdmin>[m
+[31m-            }[m
+[31m-          />[m
+[31m-        </Routes>[m
+[31m-      </main>[m
+[32m+[m[32m      <div className="md:pl-64">[m
+[32m+[m[32m        <AppShell title="" onOpenSidebar={() => setSidebarOpen(true)}>[m
+[32m+[m[32m          <Routes>[m
+[32m+[m[32m            <Route path="/" element={<Dashboard />} />[m
+[32m+[m[32m            <Route path="/proyectos" element={<Proyectos />} />[m
+[32m+[m[32m            <Route path="/inventarios" element={<Inventarios />} />[m
+[32m+[m[32m            <Route path="/finanzas-personales" element={<FinanzasPersonales />} />[m
+[32m+[m[32m            <Route[m
+[32m+[m[32m              path="/admin/usuarios"[m
+[32m+[m[32m              element={[m
+[32m+[m[32m                <RequireAdmin>[m
+[32m+[m[32m                  <AdminUsuariosPage />[m
+[32m+[m[32m                </RequireAdmin>[m
+[32m+[m[32m              }[m
+[32m+[m[32m            />[m
+[32m+[m[32m          </Routes>[m
+[32m+[m[32m        </AppShell>[m
+[32m+[m[32m      </div>[m
+     </div>[m
+   );[m
+ }[m
+[1mdiff --git a/frontend/src/components/Sidebar.jsx b/frontend/src/components/Sidebar.jsx[m
+[1mindex 2c91bca..cc34a4d 100644[m
+[1m--- a/frontend/src/components/Sidebar.jsx[m
+[1m+++ b/frontend/src/components/Sidebar.jsx[m
+[36m@@ -1,52 +1,74 @@[m
+[31m-import React from 'react';[m
+[31m-import { Link, useLocation, useNavigate } from 'react-router-dom';[m
+[31m-import { LayoutDashboard, HardHat, Package, Wallet, Settings, ShieldCheck, LogOut } from 'lucide-react';[m
+[32m+[m[32mimport React, { useEffect } from "react";[m
+[32m+[m[32mimport { Link, useLocation, useNavigate } from "react-router-dom";[m
+[32m+[m[32mimport {[m
+[32m+[m[32m  LayoutDashboard,[m
+[32m+[m[32m  HardHat,[m
+[32m+[m[32m  Package,[m
+[32m+[m[32m  Wallet,[m
+[32m+[m[32m  ShieldCheck,[m
+[32m+[m[32m  LogOut,[m
+[32m+[m[32m  X,[m
+[32m+[m[32m} from "lucide-react";[m
+ [m
+[31m-const logoModules = import.meta.glob('../assets/LOGO_CONSTRUCTORA_icono.jpg', {[m
+[32m+[m[32mconst logoModules = import.meta.glob("../assets/LOGO_CONSTRUCTORA_icono.jpg", {[m
+   eager: true,[m
+[31m-  import: 'default',[m
+[32m+[m[32m  import: "default",[m
+ });[m
+ const logoMS = Object.values(logoModules)[0];[m
+ [m
+[31m-const Sidebar = () => {[m
+[32m+[m[32mfunction isActivePath(currentPath, itemPath) {[m
+[32m+[m[32m  if (itemPath === "/") return currentPath === "/";[m
+[32m+[m[32m  return currentPath === itemPath || currentPath.startsWith(itemPath + "/");[m
+[32m+[m[32m}[m
+[32m+[m
+[32m+[m[32mconst Sidebar = ({ open = false, onClose = () => {} }) => {[m
+   const location = useLocation();[m
+   const navigate = useNavigate();[m
+ [m
+[31m-  const token = localStorage.getItem('token') || localStorage.getItem('userToken');[m
+[31m-  let rol = '';[m
+[32m+[m[32m  const token = localStorage.getItem("token") || localStorage.getItem("userToken");[m
+[32m+[m[32m  let rol = "";[m
+   try {[m
+[31m-    const payload = token ? JSON.parse(atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/'))) : null;[m
+[31m-    rol = payload?.rol || '';[m
+[32m+[m[32m    const payload = token[m
+[32m+[m[32m      ? JSON.parse(atob(token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/")))[m
+[32m+[m[32m      : null;[m
+[32m+[m[32m    rol = payload?.rol || "";[m
+   } catch {[m
+[31m-    rol = '';[m
+[32m+[m[32m    rol = "";[m
+   }[m
+ [m
+   const menuItems = [[m
+[31m-    { name: 'Dashboard', path: '/', icon: <LayoutDashboard size={20} /> },[m
+[31m-    { name: 'Proyectos', path: '/proyectos', icon: <HardHat size={20} /> },[m
+[31m-    { name: 'Inventarios', path: '/inventarios', icon: <Package size={20} /> },[m
+[31m-    { name: 'Gastos Personales', path: '/finanzas-personales', icon: <Wallet size={20} /> },[m
+[32m+[m[32m    { name: "Dashboard", path: "/", icon: <LayoutDashboard size={20} /> },[m
+[32m+[m[32m    { name: "Proyectos", path: "/proyectos", icon: <HardHat size={20} /> },[m
+[32m+[m[32m    { name: "Inventarios", path: "/inventarios", icon: <Package size={20} /> },[m
+[32m+[m[32m    { name: "Gastos Personales", path: "/finanzas-personales", icon: <Wallet size={20} /> },[m
+   ];[m
+ [m
+[31m-  if (rol === 'admin') {[m
+[31m-    menuItems.push({ name: 'Usuarios', path: '/admin/usuarios', icon: <ShieldCheck size={20} /> });[m
+[32m+[m[32m  if (rol === "admin") {[m
+[32m+[m[32m    menuItems.push({ name: "Usuarios", path: "/admin/usuarios", icon: <ShieldCheck size={20} /> });[m
+   }[m
+ [m
+   const logout = () => {[m
+[31m-    localStorage.removeItem('token');[m
+[31m-    localStorage.removeItem('userToken');[m
+[31m-    navigate('/login');[m
+[32m+[m[32m    localStorage.removeItem("token");[m
+[32m+[m[32m    localStorage.removeItem("userToken");[m
+[32m+[m[32m    onClose();[m
+[32m+[m[32m    navigate("/login");[m
+   };[m
+ [m
+[31m-  return ([m
+[31m-    <div className="w-64 bg-slate-900 text-white h-screen fixed left-0 top-0 p-4">[m
+[31m-      <div className="mb-8 px-4 py-2">[m
+[32m+[m[32m  // Cierra el drawer al navegar (móvil)[m
+[32m+[m[32m  useEffect(() => {[m
+[32m+[m[32m    onClose();[m
+[32m+[m[32m    // eslint-disable-next-line react-hooks/exhaustive-deps[m
+[32m+[m[32m  }, [location.pathname]);[m
+[32m+[m
+[32m+[m[32m  const SidebarContent = ([m
+[32m+[m[32m    <div className="flex h-full flex-col">[m
+[32m+[m[32m      <div className="mb-6 px-4 py-2">[m
+         {logoMS ? ([m
+           <img src={logoMS} alt="SOFTCON-MYS" className="w-32 h-auto rounded-lg shadow-md" />[m
+         ) : ([m
+[31m-          <h1 className="text-2xl font-black tracking-tighter text-blue-400 leading-tight">[m
+[32m+[m[32m          <h1 className="text-2xl font-black tracking-tighter text-sky-300 leading-tight">[m
+             SOFTCON-MYS<br />[m
+[31m-            <span className="text-blue-200">CONSTRU-WM</span>[m
+[32m+[m[32m            <span className="text-sky-200">CONSTRU-WM</span>[m
+           </h1>[m
+         )}[m
+         <p className="text-[10px] font-bold text-slate-400 mt-2 tracking-widest uppercase">[m
+[36m@@ -54,35 +76,74 @@[m [mconst Sidebar = () => {[m
+         </p>[m
+       </div>[m
+ [m
+[31m-      <nav className="space-y-2">[m
+[31m-        {menuItems.map((item) => ([m
+[31m-          <Link[m
+[31m-            key={item.path}[m
+[31m-            to={item.path}[m
+[31m-            className={`flex items-center space-x-3 p-3 rounded-lg transition-colors ${[m
+[31m-              location.pathname === item.path[m
+[31m-                ? 'bg-blue-600 text-white'[m
+[31m-                : 'hover:bg-slate-800 text-slate-400'[m
+[31m-            }`}[m
+[31m-          >[m
+[31m-            {item.icon}[m
+[31m-            <span className="font-medium">{item.name}</span>[m
+[31m-          </Link>[m
+[31m-        ))}[m
+[32m+[m[32m      <nav className="space-y-2 px-2">[m
+[32m+[m[32m        {menuItems.map((item) => {[m
+[32m+[m[32m          const active = isActivePath(location.pathname, item.path);[m
+[32m+[m[32m          return ([m
+[32m+[m[32m            <Link[m
+[32m+[m[32m              key={item.path}[m
+[32m+[m[32m              to={item.path}[m
+[32m+[m[32m              className={[[m
+[32m+[m[32m                "flex items-center gap-3 p-3 rounded-lg transition-colors",[m
+[32m+[m[32m                active ? "bg-sky-500/20 text-white border border-sky-400/20" : "hover:bg-white/5 text-slate-300",[m
+[32m+[m[32m              ].join(" ")}[m
+[32m+[m[32m            >[m
+[32m+[m[32m              {item.icon}[m
+[32m+[m[32m              <span className="font-medium">{item.name}</span>[m
+[32m+[m[32m            </Link>[m
+[32m+[m[32m          );[m
+[32m+[m[32m        })}[m
+       </nav>[m
+ [m
+[31m-      <div className="absolute bottom-4 left-4 right-4 pt-4 border-t border-slate-800">[m
+[31m-        <button[m
+[31m-          type="button"[m
+[31m-          onClick={logout}[m
+[31m-          className="w-full flex items-center space-x-2 text-slate-400 hover:text-white hover:bg-slate-800 p-3 rounded-lg"[m
+[31m-        >[m
+[31m-          <LogOut size={18} />[m
+[31m-          <span className="text-sm">Salir</span>[m
+[31m-        </button>[m
+[32m+[m[32m      <div className="mt-auto px-2 pb-4 pt-4">[m
+[32m+[m[32m        <div className="border-t border-white/10 pt-4">[m
+[32m+[m[32m          <button[m
+[32m+[m[32m            type="button"[m
+[32m+[m[32m            onClick={logout}[m
+[32m+[m[32m            className="w-full flex items-center gap-2 text-slate-300 hover:text-white hover:bg-white/5 p-3 rounded-lg"[m
+[32m+[m[32m          >[m
+[32m+[m[32m            <LogOut size={18} />[m
+[32m+[m[32m            <span className="text-sm">Salir</span>[m
+[32m+[m[32m          </button>[m
+[32m+[m[32m        </div>[m
+       </div>[m
+     </div>[m
+   );[m
+[32m+[m
+[32m+[m[32m  return ([m
+[32m+[m[32m    <>[m
+[32m+[m[32m      {/* Desktop sidebar */}[m
+[32m+[m[32m      <aside className="hidden md:fixed md:inset-y-0 md:left-0 md:flex md:w-64 md:flex-col bg-slate-900/80 backdrop-blur border-r border-white/10">[m
+[32m+[m[32m        <div className="p-4 h-full">{SidebarContent}</div>[m
+[32m+[m[32m      </aside>[m
+[32m+[m
+[32m+[m[32m      {/* Mobile drawer */}[m
+[32m+[m[32m      {open ? ([m
+[32m+[m[32m        <div className="fixed inset-0 z-40 md:hidden" role="dialog" aria-modal="true">[m
+[32m+[m[32m          <button[m
+[32m+[m[32m            type="button"[m
+[32m+[m[32m            className="absolute inset-0 bg-black/60"[m
+[32m+[m[32m            onClick={onClose}[m
+[32m+[m[32m            aria-label="Cerrar menú"[m
+[32m+[m[32m          />[m
+[32m+[m[32m          <aside className="absolute left-0 top-0 h-full w-72 max-w-[85vw] bg-slate-900/95 backdrop-blur border-r border-white/10 p-4 shadow-2xl">[m
+[32m+[m[32m            <div className="mb-2 flex items-center justify-between px-2">[m
+[32m+[m[32m              <div className="text-xs font-semibold tracking-wider text-slate-300">MENÚ</div>[m
+[32m+[m[32m              <button[m
+[32m+[m[32m                type="button"[m
+[32m+[m[32m                onClick={onClose}[m
+[32m+[m[32m                className="rounded-md p-2 text-slate-300 hover:bg-white/5 hover:text-white"[m
+[32m+[m[32m                aria-label="Cerrar"[m
+[32m+[m[32m              >[m
+[32m+[m[32m                <X size={18} />[m
+[32m+[m[32m              </button>[m
+[32m+[m[32m            </div>[m
+[32m+[m[32m            {SidebarContent}[m
+[32m+[m[32m          </aside>[m
+[32m+[m[32m        </div>[m
+[32m+[m[32m      ) : null}[m
+[32m+[m[32m    </>[m
+[32m+[m[32m  );[m
+ };[m
+ [m
+ export default Sidebar;[m
+[1mdiff --git a/frontend/src/pages/Dashboard.jsx b/frontend/src/pages/Dashboard.jsx[m
+[1mindex 3c1b78d..5c63859 100644[m
+[1m--- a/frontend/src/pages/Dashboard.jsx[m
+[1m+++ b/frontend/src/pages/Dashboard.jsx[m
+[36m@@ -1,5 +1,5 @@[m
+[31m-import React, { useEffect, useState } from 'react';[m
+[31m-import { Briefcase, User, Wallet, HardHat } from 'lucide-react';[m
+[32m+[m[32mimport React, { useEffect, useMemo, useState } from "react";[m
+[32m+[m[32mimport { Briefcase, User, Wallet, HardHat } from "lucide-react";[m
+ import {[m
+   BarChart,[m
+   Bar,[m
+[36m@@ -9,136 +9,174 @@[m [mimport {[m
+   Tooltip,[m
+   Legend,[m
+   ResponsiveContainer,[m
+[31m-} from 'recharts';[m
+[31m-import api from '../api';[m
+[31m-import AlertaPanel from '../components/AlertaPanel.jsx';[m
+[31m-import GaleriaObra from '../components/GaleriaObra.jsx';[m
+[31m-import ImportadorCSV from '../components/ImportadorCSV.jsx';[m
+[31m-[m
+[31m-const StatCard = ({ title, value, color }) => ([m
+[31m-  <div[m
+[31m-    style={{[m
+[31m-      background: '#fff',[m
+[31m-      padding: '16px',[m
+[31m-      borderRadius: '12px',[m
+[31m-      borderLeft: '4px solid #3182ce',[m
+[31m-      boxShadow: '0 2px 4px rgba(0,0,0,0.06)',[m
+[31m-    }}[m
+[31m-  >[m
+[31m-    <p style={{ fontSize: '12px', color: '#718096', fontWeight: 800, textTransform: 'uppercase' }}>[m
+[31m-      {title}[m
+[31m-    </p>[m
+[31m-    <p style={{ fontSize: '24px', fontWeight: 900, color }}>{value}</p>[m
+[31m-  </div>[m
+[31m-);[m
+[32m+[m[32m} from "recharts";[m
+[32m+[m[32mimport api from "../api";[m
+[32m+[m[32mimport AlertaPanel from "../components/AlertaPanel.jsx";[m
+[32m+[m[32mimport GaleriaObra from "../components/GaleriaObra.jsx";[m
+[32m+[m[32mimport ImportadorCSV from "../components/ImportadorCSV.jsx";[m
+[32m+[m[32mimport { Card, CardBody } from "../components/ui/Card";[m
+[32m+[m[32mimport { Button } from "../components/ui/Button";[m
+[32m+[m
+[32m+[m[32mconst money = (value) => {[m
+[32m+[m[32m  const n = Number(value ?? 0);[m
+[32m+[m[32m  const safe = Number.isFinite(n) ? n : 0;[m
+[32m+[m[32m  return new Intl.NumberFormat("es-GT", { style: "currency", currency: "GTQ" }).format(safe);[m
+[32m+[m[32m};[m
+[32m+[m
+[32m+[m[32mconst StatCard = ({ title, value, tone = "sky" }) => {[m
+[32m+[m[32m  const toneMap = {[m
+[32m+[m[32m    sky: "border-sky-400/40 text-sky-200",[m
+[32m+[m[32m    green: "border-emerald-400/40 text-emerald-200",[m
+[32m+[m[32m    red: "border-rose-400/40 text-rose-200",[m
+[32m+[m[32m    amber: "border-amber-400/40 text-amber-200",[m
+[32m+[m[32m  };[m
+[32m+[m
+[32m+[m[32m  return ([m
+[32m+[m[32m    <Card className={`border-l-4 ${toneMap[tone] || toneMap.sky}`}>[m
+[32m+[m[32m      <CardBody className="py-5">[m
+[32m+[m[32m        <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400">{title}</p>[m
+[32m+[m[32m        <p className="mt-2 text-2xl font-black text-slate-100">{value}</p>[m
+[32m+[m[32m      </CardBody>[m
+[32m+[m[32m    </Card>[m
+[32m+[m[32m  );[m
+[32m+[m[32m};[m
+ [m
+ const DashboardFinal = ({ proyectoId }) => {[m
+[31m-  const [proyectoActivoDesdeApi, setProyectoActivoDesdeApi] = useState('');[m
+[31m-  const [nombreProyecto, setNombreProyecto] = useState('');[m
+[32m+[m[32m  const [proyectoActivoDesdeApi, setProyectoActivoDesdeApi] = useState("");[m
+[32m+[m[32m  const [nombreProyecto, setNombreProyecto] = useState("");[m
+   const [totalGastosPersonales, setTotalGastosPersonales] = useState(null);[m
+[31m-  const [resumenPersonalError, setResumenPersonalError] = useState('');[m
+[32m+[m[32m  const [resumenPersonalError, setResumenPersonalError] = useState("");[m
+ [m
+   useEffect(() => {[m
+     if (proyectoId) return;[m
+ [m
+     api[m
+[31m-      .get('/proyectos')[m
+[32m+[m[32m      .get("/proyectos")[m
+       .then((res) => {[m
+       
