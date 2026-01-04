@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Briefcase, User, Wallet, HardHat } from 'lucide-react';
+import React, { useEffect, useMemo, useState } from "react";
+import { Briefcase, User, Wallet, HardHat } from "lucide-react";
 import {
   BarChart,
   Bar,
@@ -9,136 +9,174 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
-} from 'recharts';
-import api from '../api';
-import AlertaPanel from '../components/AlertaPanel.jsx';
-import GaleriaObra from '../components/GaleriaObra.jsx';
-import ImportadorCSV from '../components/ImportadorCSV.jsx';
+} from "recharts";
+import api from "../api";
+import AlertaPanel from "../components/AlertaPanel.jsx";
+import GaleriaObra from "../components/GaleriaObra.jsx";
+import ImportadorCSV from "../components/ImportadorCSV.jsx";
+import { Card, CardBody } from "../components/ui/Card";
+import { Button } from "../components/ui/Button";
 
-const StatCard = ({ title, value, color }) => (
-  <div
-    style={{
-      background: '#fff',
-      padding: '16px',
-      borderRadius: '12px',
-      borderLeft: '4px solid #3182ce',
-      boxShadow: '0 2px 4px rgba(0,0,0,0.06)',
-    }}
-  >
-    <p style={{ fontSize: '12px', color: '#718096', fontWeight: 800, textTransform: 'uppercase' }}>
-      {title}
-    </p>
-    <p style={{ fontSize: '24px', fontWeight: 900, color }}>{value}</p>
-  </div>
-);
+const money = (value) => {
+  const n = Number(value ?? 0);
+  const safe = Number.isFinite(n) ? n : 0;
+  return new Intl.NumberFormat("es-GT", { style: "currency", currency: "GTQ" }).format(safe);
+};
+
+const StatCard = ({ title, value, tone = "sky" }) => {
+  const toneMap = {
+    sky: "border-sky-400/40 text-sky-200",
+    green: "border-emerald-400/40 text-emerald-200",
+    red: "border-rose-400/40 text-rose-200",
+    amber: "border-amber-400/40 text-amber-200",
+  };
+
+  return (
+    <Card className={`border-l-4 ${toneMap[tone] || toneMap.sky}`}>
+      <CardBody className="py-5">
+        <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400">{title}</p>
+        <p className="mt-2 text-2xl font-black text-slate-100">{value}</p>
+      </CardBody>
+    </Card>
+  );
+};
 
 const DashboardFinal = ({ proyectoId }) => {
-  const [proyectoActivoDesdeApi, setProyectoActivoDesdeApi] = useState('');
-  const [nombreProyecto, setNombreProyecto] = useState('');
+  const [proyectoActivoDesdeApi, setProyectoActivoDesdeApi] = useState("");
+  const [nombreProyecto, setNombreProyecto] = useState("");
   const [totalGastosPersonales, setTotalGastosPersonales] = useState(null);
-  const [resumenPersonalError, setResumenPersonalError] = useState('');
+  const [resumenPersonalError, setResumenPersonalError] = useState("");
 
   useEffect(() => {
     if (proyectoId) return;
 
     api
-      .get('/proyectos')
+      .get("/proyectos")
       .then((res) => {
         const first = Array.isArray(res.data) ? res.data[0] : null;
         if (!first) return;
 
         setProyectoActivoDesdeApi(first.id);
-        setNombreProyecto(first.nombre_proyecto || first.nombre || '');
+        setNombreProyecto(first.nombre_proyecto || first.nombre || "");
       })
       .catch(() => {
-        // Silencioso: sin proyecto no se muestran alertas/galería
+        // silencioso
       });
   }, [proyectoId]);
 
   useEffect(() => {
     api
-      .get('/finanzas-personales/resumen')
+      .get("/finanzas-personales/resumen")
       .then((res) => {
         const total = Number(res?.data?.total_gastos ?? 0);
         setTotalGastosPersonales(Number.isFinite(total) ? total : 0);
-        setResumenPersonalError('');
+        setResumenPersonalError("");
       })
       .catch((err) => {
-        // Si no hay token / no está logueado, no rompemos el tablero.
         setTotalGastosPersonales(null);
-        setResumenPersonalError(err?.response?.data?.detail || '');
+        setResumenPersonalError(err?.response?.data?.detail || "");
       });
   }, []);
 
   const PROYECTO_ACTIVO = proyectoId || proyectoActivoDesdeApi;
 
   return (
-    <div className="min-h-screen bg-slate-50 p-4 md:p-8">
-      <div className="max-w-7xl mx-auto mb-8 flex flex-col md:flex-row justify-between items-center border-b pb-6 border-slate-200">
+    <div className="space-y-6">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="text-4xl font-black text-slate-900 tracking-tighter">
-            SOFTCON-MYS-CONSTRU-WM
+          <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-100">
+            Dashboard
           </h1>
-          <p className="text-slate-500 font-medium italic">"Construyendo tu futuro"</p>
+          <p className="mt-1 text-sm text-slate-400">
+            SOFTCON-MYS-CONSTRU-WM · “Construyendo tu futuro”
+          </p>
         </div>
-        <div className="mt-4 md:mt-0 flex space-x-3">
-          <div className="bg-white border px-4 py-2 rounded-xl shadow-sm">
-            <p className="text-[10px] font-bold text-slate-400 uppercase">Versión</p>
-            <p className="text-xs font-black">PRO-BUILD v1.0</p>
-          </div>
-        </div>
+
+        <Card className="w-fit">
+          <CardBody className="py-4">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+              Versión
+            </p>
+            <p className="text-xs font-black text-slate-100">PRO-BUILD v1.0</p>
+          </CardBody>
+        </Card>
       </div>
 
-      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
           <AlertaPanel proyectoId={PROYECTO_ACTIVO} />
 
-          <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-200">
-            <h2 className="text-2xl font-black mb-6 flex items-center">
-              <HardHat className="mr-2 text-orange-500" /> Estado de Obra: {nombreProyecto || 'Edificio Horizonte'}
-            </h2>
-            <div className="grid grid-cols-2 gap-6 mb-8">
-              <div className="bg-slate-50 p-4 rounded-2xl">
-                <p className="text-xs text-slate-500 font-bold uppercase">Avance Físico</p>
-                <p className="text-3xl font-black text-slate-800">68%</p>
+          <Card>
+            <CardBody>
+              <h2 className="text-lg sm:text-xl font-black flex items-center gap-2">
+                <HardHat className="text-amber-300" />
+                Estado de Obra:{" "}
+                <span className="text-slate-200 font-black">
+                  {nombreProyecto || "Edificio Horizonte"}
+                </span>
+              </h2>
+
+              <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+                  <p className="text-[11px] text-slate-400 font-bold uppercase tracking-widest">
+                    Avance Físico
+                  </p>
+                  <p className="mt-2 text-3xl font-black text-slate-100">68%</p>
+                </div>
+
+                <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+                  <p className="text-[11px] text-slate-400 font-bold uppercase tracking-widest">
+                    Materiales en Bodega
+                  </p>
+                  <p className="mt-2 text-3xl font-black text-slate-100">Q 45,200</p>
+                </div>
               </div>
-              <div className="bg-slate-50 p-4 rounded-2xl">
-                <p className="text-xs text-slate-500 font-bold uppercase">Materiales en Bodega</p>
-                <p className="text-3xl font-black text-slate-800">Q 45,200</p>
+
+              <div className="mt-6">
+                <GaleriaObra proyectoId={PROYECTO_ACTIVO} />
               </div>
-            </div>
-            <GaleriaObra proyectoId={PROYECTO_ACTIVO} />
-          </div>
+            </CardBody>
+          </Card>
         </div>
 
         <div className="space-y-6">
-          <div className="bg-slate-900 text-white p-8 rounded-3xl shadow-2xl relative overflow-hidden">
-            <div className="relative z-10">
-              <p className="text-sm font-bold text-blue-400 uppercase tracking-widest">Gastos Personales (acumulado)</p>
-              <h2 className="text-4xl font-black mt-2">
-                {totalGastosPersonales === null ? '—' : `Q ${totalGastosPersonales.toFixed(2)}`}
+          <Card className="relative overflow-hidden">
+            <CardBody>
+              <p className="text-[11px] font-bold uppercase tracking-widest text-sky-300">
+                Gastos Personales (acumulado)
+              </p>
+
+              <h2 className="mt-2 text-3xl font-black text-slate-100">
+                {totalGastosPersonales === null ? "—" : money(totalGastosPersonales)}
               </h2>
-              <div className="mt-6 p-4 bg-white/10 rounded-2xl backdrop-blur-md">
-                <p className="text-xs opacity-70">Estado</p>
-                <p className="text-sm font-bold text-white/80">
-                  {resumenPersonalError ? 'Inicia sesión para ver tu resumen' : 'Actualizado desde tu cuenta'}
+
+              <div className="mt-5 rounded-2xl border border-white/10 bg-white/5 p-4">
+                <p className="text-xs text-slate-400">Estado</p>
+                <p className="mt-1 text-sm font-bold text-slate-200">
+                  {resumenPersonalError ? "Inicia sesión para ver tu resumen" : "Actualizado desde tu cuenta"}
                 </p>
               </div>
-            </div>
-            <Wallet className="absolute -bottom-4 -right-4 text-white/5" size={150} />
-          </div>
+            </CardBody>
 
-          <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-200">
-            <h3 className="font-bold text-slate-800 mb-4">Acciones Rápidas</h3>
-            <div className="grid grid-cols-1 gap-3">
-              <button className="flex items-center p-3 bg-slate-50 rounded-xl hover:bg-blue-50 transition font-bold text-sm">
-                <Briefcase className="mr-3 text-blue-600" size={18} /> Nueva Orden de Compra
-              </button>
-              <button className="flex items-center p-3 bg-slate-50 rounded-xl hover:bg-green-50 transition font-bold text-sm">
-                <User className="mr-3 text-green-600" size={18} /> Registrar Gasto Personal
-              </button>
-            </div>
-          </div>
+            <Wallet className="absolute -bottom-6 -right-6 text-white/5" size={160} />
+          </Card>
+
+          <Card>
+            <CardBody>
+              <h3 className="font-black text-slate-100 mb-4">Acciones rápidas</h3>
+              <div className="grid grid-cols-1 gap-3">
+                <Button type="button" variant="ghost" className="justify-start gap-3">
+                  <Briefcase className="text-sky-300" size={18} />
+                  Nueva Orden de Compra
+                </Button>
+
+                <Button type="button" variant="ghost" className="justify-start gap-3">
+                  <User className="text-emerald-300" size={18} />
+                  Registrar Gasto Personal
+                </Button>
+              </div>
+            </CardBody>
+          </Card>
 
           <ImportadorCSV />
         </div>
@@ -149,7 +187,7 @@ const DashboardFinal = ({ proyectoId }) => {
 
 const Dashboard = ({ proyectoId } = {}) => {
   const [metricas, setMetricas] = useState(null);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   useEffect(() => {
     if (!proyectoId) return;
@@ -158,69 +196,95 @@ const Dashboard = ({ proyectoId } = {}) => {
       .get(`/finanzas/estado-resultado/${proyectoId}`)
       .then((res) => {
         setMetricas(res.data);
-        setError('');
+        setError("");
       })
       .catch((err) => {
         setMetricas(null);
-        setError(err?.response?.data?.detail || err?.message || 'Error consultando finanzas');
+        setError(err?.response?.data?.detail || err?.message || "Error consultando finanzas");
       });
   }, [proyectoId]);
 
-  if (!proyectoId) {
-    return <DashboardFinal proyectoId={proyectoId} />;
+  const data = useMemo(() => {
+    if (!metricas) return [];
+    return [
+      {
+        nombre_proyecto: metricas.nombre_proyecto || "Proyecto",
+        ingresos: Number(metricas.ingresos ?? 0),
+        egresos_totales: Number(metricas.egresos_totales ?? 0),
+      },
+    ];
+  }, [metricas]);
+
+  if (!proyectoId) return <DashboardFinal proyectoId={proyectoId} />;
+
+  if (error) {
+    return (
+      <Card className="border border-rose-400/20">
+        <CardBody>
+          <p className="text-rose-200 font-semibold">Error: {error}</p>
+        </CardBody>
+      </Card>
+    );
   }
 
-  if (error) return <p style={{ color: '#e53e3e' }}>Error: {error}</p>;
-  if (!metricas) return <p>Cargando datos financieros...</p>;
-
-  const data = [
-    {
-      nombre_proyecto: metricas.nombre_proyecto || 'Proyecto',
-      ingresos: metricas.ingresos,
-      egresos_totales: metricas.egresos_totales,
-    },
-  ];
+  if (!metricas) {
+    return (
+      <Card>
+        <CardBody>
+          <p className="text-slate-300">Cargando datos financieros...</p>
+        </CardBody>
+      </Card>
+    );
+  }
 
   return (
-    <div style={{ padding: '24px', background: '#f7fafc', minHeight: '100vh' }}>
-      <h1 style={{ fontSize: '28px', fontWeight: 900, marginBottom: '18px', color: '#2d3748' }}>
-        Control Maestro: {metricas.nombre_proyecto || metricas.proyecto_id}
-      </h1>
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-100">
+          Control Maestro:{" "}
+          <span className="text-slate-200">
+            {metricas.nombre_proyecto || metricas.proyecto_id}
+          </span>
+        </h1>
+        <p className="mt-1 text-sm text-slate-400">Resumen financiero y alertas del proyecto</p>
+      </div>
 
       <AlertaPanel proyectoId={proyectoId} />
-
       <GaleriaObra proyectoId={proyectoId} />
 
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-          gap: '14px',
-          marginBottom: '18px',
-        }}
-      >
-        <StatCard title="Ingresos Totales" value={`Q${metricas.ingresos}`} color="#2f855a" />
-        <StatCard title="Gastos Materiales" value={`Q${metricas.egresos_materiales}`} color="#e53e3e" />
-        <StatCard title="Planilla Pagada" value={`Q${metricas.egresos_planilla}`} color="#dd6b20" />
-        <StatCard title="Utilidad Neta" value={`Q${metricas.utilidad_neta}`} color="#3182ce" />
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+        <StatCard title="Ingresos Totales" value={money(metricas.ingresos)} tone="green" />
+        <StatCard title="Gastos Materiales" value={money(metricas.egresos_materiales)} tone="red" />
+        <StatCard title="Planilla Pagada" value={money(metricas.egresos_planilla)} tone="amber" />
+        <StatCard title="Utilidad Neta" value={money(metricas.utilidad_neta)} tone="sky" />
       </div>
 
-      <div style={{ background: '#fff', padding: '18px', borderRadius: '12px', boxShadow: '0 2px 4px rgba(0,0,0,0.06)' }}>
-        <h2 style={{ fontSize: '18px', fontWeight: 800, marginBottom: '10px' }}>Análisis de Costos vs. Ingresos</h2>
-        <div style={{ width: '100%', height: 300 }}>
-          <ResponsiveContainer>
-            <BarChart data={data}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="nombre_proyecto" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Bar dataKey="ingresos" fill="#2ecc71" name="Ingresos" />
-              <Bar dataKey="egresos_totales" fill="#e74c3c" name="Egresos" />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
+      <Card>
+        <CardBody>
+          <h2 className="text-lg font-black text-slate-100 mb-4">Análisis de Costos vs. Ingresos</h2>
+
+          <div className="h-[320px] w-full">
+            <ResponsiveContainer>
+              <BarChart data={data}>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.08)" />
+                <XAxis dataKey="nombre_proyecto" stroke="rgba(255,255,255,0.6)" />
+                <YAxis stroke="rgba(255,255,255,0.6)" />
+                <Tooltip
+                  contentStyle={{
+                    background: "rgba(2,6,23,0.92)",
+                    border: "1px solid rgba(255,255,255,0.12)",
+                    borderRadius: 12,
+                    color: "#e2e8f0",
+                  }}
+                />
+                <Legend />
+                <Bar dataKey="ingresos" fill="#34d399" name="Ingresos" radius={[8, 8, 0, 0]} />
+                <Bar dataKey="egresos_totales" fill="#fb7185" name="Egresos" radius={[8, 8, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </CardBody>
+      </Card>
     </div>
   );
 };
