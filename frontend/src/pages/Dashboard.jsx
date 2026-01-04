@@ -16,7 +16,7 @@ import GaleriaObra from "../components/GaleriaObra.jsx";
 import ImportadorCSV from "../components/ImportadorCSV.jsx";
 import { Card, CardBody } from "../components/ui/Card";
 import { Button } from "../components/ui/Button";
-import { supabase } from "../supabaseClient"; // Ajusta la ruta según tu proyecto
+import { supabase } from "../supabaseClient";
 
 const money = (value) => {
   const n = Number(value ?? 0);
