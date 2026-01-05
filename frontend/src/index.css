@@ -48,7 +48,8 @@
 }
 
 /* 1. Definición de la Identidad Visual (Tailwind v4 Theme) */
-@theme {
+
+:root {
   --color-softcon-primary: #facc15;    /* Amarillo Brillante */
   --color-softcon-secondary: #8b5cf6;  /* Violeta Resplandeciente */
   --color-softcon-glow: rgba(139, 92, 246, 0.5);
@@ -74,14 +75,14 @@
   
   /* Efecto de Cristal (Glassmorphism) */
   .glass-card {
-    @apply bg-slate-900/50 backdrop-blur-md border border-white/10 rounded-2xl shadow-xl;
+    @apply bg-slate-900 bg-opacity-50 backdrop-blur-md border border-white border-opacity-10 rounded-2xl shadow-xl;
   }
 
   /* Entradas de texto estilizadas */
   .input-field {
-    @apply w-full bg-slate-900/80 border border-white/10 rounded-xl px-4 py-3 
+    @apply w-full bg-slate-900 bg-opacity-80 border border-white border-opacity-10 rounded-xl px-4 py-3 
            text-white outline-none transition-all duration-300
-           focus:border-softcon-secondary focus:ring-2 focus:ring-softcon-secondary/20;
+           focus:border-softcon-secondary focus:ring-2 focus:ring-softcon-secondary bg-opacity-20;
   }
 
   /* Botón Principal con Resplandor */
@@ -119,6 +120,9 @@
   }
 
   .custom-scrollbar::-webkit-scrollbar-thumb {
-    @apply bg-slate-700 rounded-full hover:bg-softcon-secondary;
+    @apply bg-slate-700 rounded-full;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #8b5cf6; /* softcon-secondary */
   }
 }
