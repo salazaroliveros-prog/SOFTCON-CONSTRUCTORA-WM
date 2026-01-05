@@ -38,6 +38,7 @@ const InputField: React.FC<InputFieldProps> = ({
           onChange={onChange}
           className={inputClasses}
         >
+          <option value="" disabled selected hidden>{placeholder}</option>
           {options.map((option) => (
             <option key={option.value} value={option.value}>
               {option.label}

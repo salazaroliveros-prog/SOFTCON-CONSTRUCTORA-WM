@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { supabase } from '../supabaseClient';
 import InputField from './InputField';
 import GlassButton from './GlassButton';
 
@@ -20,27 +21,53 @@ const AuthCard: React.FC = () => {
     document.body.classList.remove('theme-final');
   };
 
-  const handleRegister = (e: React.FormEvent) => {
+  // Registro real con Supabase
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-    const btn = e.currentTarget.querySelector('#btnRegister') as HTMLButtonElement;
+    const form = e.target as HTMLFormElement;
+    const btn = form.querySelector('#btnRegister') as HTMLButtonElement;
     if (btn) btn.innerHTML = "PROCESANDO...";
-
-    setTimeout(() => {
+    const email = form.email.value;
+    const password = form.password.value;
+    try {
+      const { error } = await supabase.auth.signUp({ email, password });
+      if (error) {
+        alert('Error al registrar: ' + error.message);
+        if (btn) btn.innerHTML = "Finalizar Registro";
+        return;
+      }
       alert("¡Usuario registrado con éxito!");
-
-      setIsFlipped(false); // Volver al login automáticamente
-
+      setIsFlipped(false);
       setTimeout(() => {
         setCurrentTheme('theme-final');
         document.body.classList.remove('theme-register');
         document.body.classList.add('theme-final');
-
-        // Resetear formulario
-        const form = e.target as HTMLFormElement;
         form.reset();
         if (btn) btn.innerHTML = "Finalizar Registro";
-      }, 600); // Duración de la animación de volteo
-    }, 1500);
+      }, 600);
+    } catch (err) {
+      alert('Error inesperado: ' + err);
+      if (btn) btn.innerHTML = "Finalizar Registro";
+    }
+  };
+
+  // Login real con Supabase
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const form = e.target as HTMLFormElement;
+    const email = form.emailLogin.value;
+    const password = form.passwordLogin.value;
+    try {
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) {
+        alert('Error al iniciar sesión: ' + error.message);
+        return;
+      }
+      alert('¡Bienvenido!');
+      // Aquí puedes redirigir o guardar sesión
+    } catch (err) {
+      alert('Error inesperado: ' + err);
+    }
   };
 
   return (
@@ -57,7 +84,7 @@ const AuthCard: React.FC = () => {
               <div className="h-1.5 w-20 bg-[var(--primary-color)] mx-auto rounded-full shadow-lg"></div>
             </div>
 
-            <form onSubmit={(e) => e.preventDefault()} className="space-y-6">
+            <form onSubmit={handleLogin} className="space-y-6">
               <InputField
                 label="Usuario / Correo"
                 type="email"
@@ -88,7 +115,7 @@ const AuthCard: React.FC = () => {
 
         {/* VISTA: REGISTRO (MORADO Y AZUL) */}
         <div className={`card-face face-register ${currentTheme === 'theme-register' ? 'theme-register' : ''}`}>
-          <div className="watermark-text" style={{ opacity: 0.1 }}>M&S</div>
+          <div className="watermark-text watermark-text-faded">M&S</div>
           <div className="logo-watermark"></div>
 
           <div className="flex flex-col h-full relative z-10">
@@ -133,6 +160,7 @@ const AuthCard: React.FC = () => {
                 label="Dependencia"
                 type="select"
                 name="dependencia"
+                placeholder="Selecciona una opción"
                 options={[
                   { value: "privada", label: "Entidad Privada" },
                   { value: "publica", label: "Entidad Pública" },

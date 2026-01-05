@@ -1,3 +1,7 @@
+.watermark-text-faded {
+    opacity: 0.1;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -7,7 +11,6 @@
     --secondary-color: #8b5cf6; /* Violeta Resplandeciente */
     --glow-color: rgba(139, 92, 246, 0.6);
     --bg-gradient: linear-gradient(135deg, #facc15 0%, #8b5cf6 100%);
-}
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -72,8 +75,79 @@ body {
 
 /* Animación del borde resplandeciente */
 @keyframes moveGradient {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
 }
+
+/* --- Estilos para la tarjeta giratoria de login/registro --- */
+.card-container {
+    width: 100%;
+    max-width: 410px;
+    min-height: 600px;
+    perspective: 1200px;
+    margin: auto;
+    position: relative;
+    z-index: 10;
 }
+.card-inner {
+    width: 100%;
+    min-height: 600px;
+    transition: transform 0.8s cubic-bezier(.4,2,.3,1), box-shadow 0.4s;
+    transform-style: preserve-3d;
+    position: relative;
+}
+.card-inner.is-flipped {
+    transform: rotateY(180deg);
+}
+.card-face {
+    position: absolute;
+    width: 100%;
+    min-height: 600px;
+    backface-visibility: hidden;
+    background: var(--bg-gradient, #18181b);
+    border-radius: 2rem;
+    box-shadow: 0 8px 40px 0 rgba(0,0,0,0.25), 0 0 0 1.5px rgba(255,255,255,0.08);
+    overflow: hidden;
+    padding: 2.5rem 2rem 2rem 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: stretch;
+}
+.face-login {
+    z-index: 2;
+}
+.face-register {
+    transform: rotateY(180deg);
+    z-index: 1;
+}
+.watermark-text {
+    position: absolute;
+    top: 2.5rem;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    font-size: 5rem;
+    font-weight: 900;
+    color: #fff;
+    opacity: 0.07;
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-select: none;
+    letter-spacing: 0.2em;
+    z-index: 0;
+}
+.logo-watermark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-repeat: no-repeat;
+    background-position: center 2.5rem;
+    background-size: 120px 120px;
+    opacity: 0.08;
+    z-index: 0;
+}
+
