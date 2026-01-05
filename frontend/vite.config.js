@@ -9,5 +9,5 @@ export default defineConfig({
   },
   // Si tienes assets globales, ponlos en /frontend/public
   // Vite los copiará automáticamente al build final
-  publicDir: 'frontend', // Es el valor por defecto, pero puedes especificarlo explícitamente
+  publicDir: 'public', // Es el valor por defecto, pero puedes especificarlo explícitamente
 })
