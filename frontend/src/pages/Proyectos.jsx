@@ -1,222 +1,121 @@
-import React, { useEffect, useState } from 'react';
-  const [user, setUser] = useState(null);
-
-  // Obtener usuario autenticado al cargar
-  useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => setUser(data?.user));
-  }, []);
-
-  // Función para cerrar sesión
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-    setUser(null);
-    alert('Sesión cerrada');
-    // Opcional: recargar proyectos públicos
-    fetchProyectos();
-  };
-import { supabase } from '../supabaseClient';
-
-// Obtener usuario autenticado
-async function getCurrentUser() {
-  const { data } = await supabase.auth.getUser();
-  return data?.user;
-}
-import { Briefcase, Plus, Loader2, AlertCircle } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { LayoutGrid, List, Plus, Search, HardHat, Calendar, DollarSign } from 'lucide-react';
+import api from '../api';
 
 export default function Proyectos() {
   const [proyectos, setProyectos] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [viewMode, setViewMode] = useState('grid'); // 'grid' o 'list'
 
-  // Función para obtener datos reales de Supabase
+  useEffect(() => {
+    fetchProyectos();
+  }, []);
+
   const fetchProyectos = async () => {
     try {
       setLoading(true);
-      const { data, error } = await supabase
-        .from('proyectos')
-        .select('*')
-        .order('creado_at', { ascending: false });
-
-      if (error) throw error;
-      setProyectos(data || []);
-    } catch (err) {
-      setError(err.message);
+      const response = await api.get('/proyectos/');
+      setProyectos(response.data);
+    } catch (error) {
+      console.error("Error al cargar proyectos de SOFTCON-WM:", error);
     } finally {
       setLoading(false);
     }
   };
 
-  // Ejemplo: función para crear un proyecto con user_id
-  const crearProyecto = async (nuevoProyecto) => {
-    const user = await getCurrentUser();
-    if (!user) {
-      alert('Debes iniciar sesión para crear un proyecto');
-      return;
-    }
-    const { error } = await supabase.from('proyectos').insert([
-      { ...nuevoProyecto, user_id: user.id }
-    ]);
-    if (error) alert('Error al crear proyecto: ' + error.message);
-    else fetchProyectos();
-  };
-
-  useEffect(() => {
-    fetchProyectos();
-  }, []);
-
-  const formatCurrency = (value) => {
-    return new Intl.NumberFormat('es-GT', { style: 'currency', currency: 'GTQ' }).format(value);
-  };
-
-  // Estado para el formulario de nuevo proyecto
-  const [nuevoProyecto, setNuevoProyecto] = useState({
-    nombre_proyecto: '',
-    cliente: '',
-    presupuesto_total: '',
-    fecha_inicio: ''
-  });
-  const [showForm, setShowForm] = useState(false);
-
-  const handleChange = (e) => {
-    setNuevoProyecto({ ...nuevoProyecto, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    await crearProyecto({
-      ...nuevoProyecto,
-      presupuesto_total: parseFloat(nuevoProyecto.presupuesto_total)
-    });
-    setNuevoProyecto({ nombre_proyecto: '', cliente: '', presupuesto_total: '', fecha_inicio: '' });
-    setShowForm(false);
-  };
-
   return (
-    <div className="p-6">
-      <div className="flex justify-between items-center mb-8">
+    <div className="space-y-6 animate-fade-in">
+      {/* Encabezado Principal */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/10 pb-6">
         <div>
-          <h1 className="text-3xl font-black text-slate-900 tracking-tight">
-            Gestión de Proyectos
+          <h1 className="text-4xl font-black text-white tracking-tight">
+            GESTIÓN DE <span className="text-softcon-primary">PROYECTOS</span>
           </h1>
-          <p className="text-slate-500 font-medium italic">"CONSTRUYENDO TU FUTURO"</p>
+          <p className="text-slate-400 mt-1 font-medium">CONSTRUYENDO TU FUTURO</p>
         </div>
-        <div className="flex gap-2">
-          <button
-            className="bg-slate-900 text-white px-5 py-2.5 rounded-xl font-bold flex items-center gap-2 hover:bg-slate-800 transition-all shadow-lg"
-            onClick={() => setShowForm((v) => !v)}
-          >
+        
+        <div className="flex items-center gap-3">
+          <div className="flex bg-slate-900/50 p-1 rounded-xl border border-white/5">
+            <button 
+              onClick={() => setViewMode('grid')}
+              className={`p-2 rounded-lg transition ${viewMode === 'grid' ? 'bg-softcon-secondary text-white' : 'text-slate-400 hover:text-white'}`}
+            >
+              <LayoutGrid size={20} />
+            </button>
+            <button 
+              onClick={() => setViewMode('list')}
+              className={`p-2 rounded-lg transition ${viewMode === 'list' ? 'bg-softcon-secondary text-white' : 'text-slate-400 hover:text-white'}`}
+            >
+              <List size={20} />
+            </button>
+          </div>
+          <button className="flex items-center gap-2 bg-softcon-primary text-black font-bold px-5 py-2.5 rounded-xl hover:scale-105 transition shadow-lg shadow-softcon-primary/20">
             <Plus size={20} /> Nuevo Proyecto
           </button>
-          {user && (
-            <button
-              className="bg-red-600 text-white px-4 py-2 rounded-xl font-bold hover:bg-red-700 transition-all shadow-lg"
-              onClick={handleLogout}
-            >
-              Cerrar Sesión
-            </button>
-          )}
         </div>
       </div>
 
-      {showForm && (
-        <form onSubmit={handleSubmit} className="mb-8 bg-white border border-slate-200 rounded-2xl p-6 shadow-md grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-xs font-bold mb-1">Nombre del Proyecto</label>
-            <input name="nombre_proyecto" value={nuevoProyecto.nombre_proyecto} onChange={handleChange} required className="w-full p-2 border rounded" />
-          </div>
-          <div>
-            <label className="block text-xs font-bold mb-1">Cliente</label>
-            <input name="cliente" value={nuevoProyecto.cliente} onChange={handleChange} className="w-full p-2 border rounded" />
-          </div>
-          <div>
-            <label className="block text-xs font-bold mb-1">Presupuesto Total</label>
-            <input name="presupuesto_total" type="number" value={nuevoProyecto.presupuesto_total} onChange={handleChange} required className="w-full p-2 border rounded" />
-          </div>
-          <div>
-            <label className="block text-xs font-bold mb-1">Fecha de Inicio</label>
-            <input name="fecha_inicio" type="date" value={nuevoProyecto.fecha_inicio} onChange={handleChange} className="w-full p-2 border rounded" />
-          </div>
-          <div className="col-span-full flex gap-2 mt-2">
-            <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded font-bold">Crear</button>
-            <button type="button" className="bg-gray-200 px-4 py-2 rounded font-bold" onClick={() => setShowForm(false)}>Cancelar</button>
-          </div>
-        </form>
-      )}
+      {/* Barra de Búsqueda y Filtros */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="md:col-span-2 relative">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
+          <input 
+            type="text" 
+            placeholder="Buscar por nombre, ubicación o cliente..." 
+            className="w-full bg-slate-900/50 border border-white/10 rounded-2xl py-3 pl-12 pr-4 text-white focus:border-softcon-secondary outline-none transition-all"
+          />
+        </div>
+        <select className="bg-slate-900/50 border border-white/10 rounded-2xl px-4 py-3 text-white outline-none focus:border-softcon-secondary">
+          <option value="">Todos los Estados</option>
+          <option value="planeacion">En Planeación</option>
+          <option value="ejecucion">En Ejecución</option>
+          <option value="finalizado">Finalizado</option>
+        </select>
+      </div>
 
+      {/* Listado de Proyectos */}
       {loading ? (
-        <div className="flex flex-col items-center justify-center py-20">
-          <Loader2 className="animate-spin text-blue-600 mb-4" size={40} />
-          <p className="text-slate-500 font-medium">Cargando datos de SOFTCON...</p>
+        <div className="flex flex-col items-center justify-center py-20 space-y-4">
+          <div className="w-12 h-12 border-4 border-softcon-primary border-t-transparent rounded-full animate-spin"></div>
+          <p className="text-slate-400 animate-pulse">Cargando portafolio de obras...</p>
         </div>
-      ) : error ? (
-        <div className="bg-red-50 border border-red-200 p-4 rounded-xl flex items-center gap-3 text-red-700">
-          <AlertCircle size={24} />
-          <p>Error al conectar con la base de datos: {error}</p>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {proyectos.map((proy) => (
-            <div 
-              key={proy.id} 
-              className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group"
-            >
-              {/* Indicador de Estado */}
-              <div className="absolute top-0 right-0 p-3">
-                <span className={`text-[10px] uppercase font-black px-2 py-1 rounded-lg ${
-                  proy.estado === 'En ejecución' ? 'bg-amber-100 text-amber-700' : 'bg-green-100 text-green-700'
+      ) : proyectos.length > 0 ? (
+        <div className={viewMode === 'grid' ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" : "space-y-4"}>
+          {proyectos.map((proyecto) => (
+            <div key={proyecto.id} className="bg-slate-900/40 border border-white/10 rounded-3xl p-6 hover:border-softcon-secondary/50 transition-all group">
+              <div className="flex justify-between items-start mb-4">
+                <div className="bg-softcon-secondary/20 p-3 rounded-2xl text-softcon-secondary group-hover:bg-softcon-secondary group-hover:text-white transition-colors">
+                  <HardHat size={24} />
+                </div>
+                <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${
+                  proyecto.estado === 'ejecucion' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-amber-500/10 text-amber-400'
                 }`}>
-                  {proy.estado}
+                  {proyecto.estado}
                 </span>
               </div>
-
-              <div className="flex items-center gap-4 mb-4">
-                <div className="p-3 bg-slate-100 rounded-xl text-slate-700 group-hover:bg-blue-600 group-hover:text-white transition-colors">
-                  <Briefcase size={24} />
+              
+              <h3 className="text-xl font-bold text-white mb-2">{proyecto.nombre}</h3>
+              <p className="text-slate-400 text-sm line-clamp-2 mb-4">{proyecto.descripcion}</p>
+              
+              <div className="grid grid-cols-2 gap-4 pt-4 border-t border-white/5">
+                <div className="flex items-center gap-2 text-slate-300">
+                  <Calendar size={16} className="text-softcon-primary" />
+                  <span className="text-xs">{proyecto.fecha_inicio}</span>
                 </div>
-                <div>
-                  <h3 className="font-bold text-slate-900 text-lg leading-tight">{proy.nombre_proyecto}</h3>
-                  <p className="text-sm text-slate-500">{proy.cliente || 'Sin cliente asignado'}</p>
-                </div>
-              </div>
-
-              <div className="space-y-3 pt-4 border-t border-slate-50">
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-slate-400 font-semibold uppercase tracking-wider text-[10px]">Presupuesto</span>
-                  <span className="font-black text-slate-800">{formatCurrency(proy.presupuesto_total || 0)}</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-slate-400 font-semibold uppercase tracking-wider text-[10px]">Inicio</span>
-                  <span className="text-sm font-medium text-slate-600">
-                    {proy.fecha_inicio ? new Date(proy.fecha_inicio).toLocaleDateString() : 'Pendiente'}
-                  </span>
+                <div className="flex items-center gap-2 text-slate-300 justify-end">
+                  <DollarSign size={16} className="text-softcon-primary" />
+                  <span className="text-xs font-bold">GTQ {proyecto.presupuesto?.toLocaleString()}</span>
                 </div>
               </div>
-
-              <button className="w-full mt-6 py-2 bg-slate-50 text-slate-600 rounded-xl font-bold text-sm hover:bg-slate-100 transition-colors">
-                Ver Detalles
-              </button>
             </div>
           ))}
-
-          {proyectos.length === 0 && (
-            <div className="col-span-full py-20 text-center border-2 border-dashed border-slate-200 rounded-3xl">
-              <p className="text-slate-400 font-medium">No hay proyectos registrados en Supabase.</p>
-            </div>
-          )}
+        </div>
+      ) : (
+        <div className="text-center py-20 bg-slate-900/20 rounded-3xl border border-dashed border-white/10">
+          <p className="text-slate-500 text-lg">No hay proyectos registrados actualmente.</p>
+          <button className="mt-4 text-softcon-primary font-bold hover:underline">Comenzar primera obra</button>
         </div>
       )}
-    </div>
-  );
-}
-import React from 'react';
-
-export default function Proyectos() {
-  return (
-    <div>
-      <h1 className="text-2xl font-black text-slate-900">Proyectos</h1>
-      <p className="mt-2 text-sm text-slate-600">
-        Aquí irá el módulo de proyectos (crear/listar/seleccionar proyecto activo).
-      </p>
     </div>
   );
 }
