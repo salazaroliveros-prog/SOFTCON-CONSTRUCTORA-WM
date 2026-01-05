@@ -10,7 +10,7 @@ input, select, button {
 }
 
 .input-custom {
-    @apply w-full bg-slate-900/50 border border-white/10 rounded-xl px-4 text-white focus:border-softcon-secondary focus:ring-1 focus:ring-softcon-secondary outline-none;
+    @apply w-full bg-slate-900 bg-opacity-50 border border-white/10 rounded-xl px-4 text-white focus:border-softcon-secondary focus:ring-1 focus:ring-softcon-secondary outline-none;
 }
 
 :root {
