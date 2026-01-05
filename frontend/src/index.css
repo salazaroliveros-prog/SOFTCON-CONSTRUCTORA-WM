@@ -8,94 +8,72 @@
     --glow-color: rgba(139, 92, 246, 0.6);
     --bg-gradient: linear-gradient(135deg, #facc15 0%, #8b5cf6 100%);
 }
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-.theme-register {
-    --primary-color: #a855f7; 
-    --secondary-color: #3b82f6; 
-    --glow-color: rgba(168, 85, 247, 0.6);
-    --bg-gradient: linear-gradient(135deg, #a855f7 0%, #3b82f6 100%);
+/* Estilos globales y variables CSS */
+:root {
+    /* Se usarán las clases de Tailwind con los colores softcon-primary, etc. */
+    /* Las variables CSS aquí son para los gradientes y el glow que usan var() directamente en el HTML original */
+    --primary-color: var(--softcon-primary);
+    --secondary-color: var(--softcon-secondary);
+    --glow-color: var(--softcon-glow-main);
+    --bg-gradient: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
 }
 
-html,
-body,
-#root {
-  height: 100%;
+.theme-register {
+    --primary-color: var(--register-primary);
+    --secondary-color: var(--register-secondary);
+    --glow-color: var(--register-glow);
+    --bg-gradient: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+}
+
+.theme-final {
+    --primary-color: var(--final-primary);
+    --secondary-color: var(--final-secondary);
+    --glow-color: var(--final-glow);
+    --bg-gradient: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
 }
 
 body {
-  margin: 0;
-  background: #0a0a0a;
-  color: white;
-  transition: background 0.8s ease;
+    background: #0a0a0a;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    font-family: var(--font-sans); /* Utiliza la variable si la defines en root */
+    overflow: hidden;
+    padding: 1.5rem;
+    transition: background 0.8s ease;
 }
 
-/* opcional */
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+/* Estilos para el texto con gradiente */
+.text-gradient {
+    background: linear-gradient(to bottom, #fff 20%, var(--primary-color) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 900;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
+/* Scrollbar personalizado para el contenido del formulario */
+.form-content {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 8px; /* Espacio para el scrollbar */
+    z-index: 5;
 }
-a:hover {
-  color: #535bf2;
-}
-
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+.form-content::-webkit-scrollbar { width: 4px; }
+.form-content::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 10px;
 }
 
-/* Glassmorphism effect for panels */
-.glass-panel {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 20px;
-    box-shadow: 0 0 30px var(--glow-color);
+/* Animación del borde resplandeciente */
+@keyframes moveGradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
 }
