@@ -1,207 +1,124 @@
+@import "tailwindcss";
+
 /* --- SOFTCON-CONSTRU-WM: Componentes y Utilidades Personalizadas --- */
 
 /* Glassmorphism Card */
 .glass-card {
-    @apply bg-slate-900 bg-opacity-50 backdrop-blur-md border border-white border-opacity-10 rounded-2xl shadow-xl;
+  @apply bg-slate-900 bg-opacity-50 backdrop-blur-md border border-white border-opacity-10 rounded-2xl shadow-xl;
 }
 
 /* Input Field */
 .input-field {
-    @apply w-full bg-slate-900 bg-opacity-80 border border-white border-opacity-10 rounded-xl px-4 py-3 text-white outline-none transition-all duration-300 focus:border-softcon-secondary focus:ring-2 focus:ring-softcon-secondary bg-opacity-20;
+  @apply w-full bg-slate-900 bg-opacity-80 border border-white border-opacity-10 rounded-xl px-4 py-3 text-white outline-none transition-all duration-300 focus:border-softcon-secondary focus:ring-2 focus:ring-softcon-secondary bg-opacity-20;
 }
 
 /* Botón Principal con Resplandor */
 .btn-primary {
-    @apply bg-softcon-primary text-slate-950 font-black px-6 py-3 rounded-xl transition-all duration-300 hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(250,204,21,0.3)];
+  @apply bg-softcon-primary text-slate-950 font-black px-6 py-3 rounded-xl transition-all duration-300 hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(250,204,21,0.3)];
 }
 
 /* Botón Secundario (Violeta) */
 .btn-secondary {
-    @apply bg-softcon-secondary text-white font-bold px-6 py-3 rounded-xl transition-all duration-300 hover:shadow-[0_0_25px_rgba(139,92,246,0.5)];
+  @apply bg-softcon-secondary text-white font-bold px-6 py-3 rounded-xl transition-all duration-300 hover:shadow-[0_0_25px_rgba(139,92,246,0.5)];
 }
 
 /* Flip Card Animación para Login/Registro */
 .flip-card-inner {
-    transition: transform 0.8s;
-    transform-style: preserve-3d;
+  transition: transform 0.8s;
+  transform-style: preserve-3d;
 }
 .flipped {
-    transform: rotateY(180deg);
+  transform: rotateY(180deg);
 }
 
 /* Utilidad: Glow en texto principal */
 .text-glow-primary {
-    text-shadow: 0 0 10px rgba(250, 204, 21, 0.5);
+  text-shadow: 0 0 10px rgba(250, 204, 21, 0.5);
 }
 
 /* Scrollbar personalizado */
 .custom-scrollbar::-webkit-scrollbar {
-    width: 6px;
+  width: 6px;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb {
-    @apply bg-slate-700 rounded-full;
+  @apply bg-slate-700 rounded-full;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: #8b5cf6; /* softcon-secondary */
+  background: #8b5cf6; /* softcon-secondary */
 }
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-/* Aire y estilo uniforme para inputs, selects y botones */
-input, select, button {
-    height: 48px;
-    transition: all 0.2s ease-in-out;
+/* 1. Definición de la Identidad Visual (Tailwind v4 Theme) */
+@theme {
+  --color-softcon-primary: #facc15;    /* Amarillo Brillante */
+  --color-softcon-secondary: #8b5cf6;  /* Violeta Resplandeciente */
+  --color-softcon-glow: rgba(139, 92, 246, 0.5);
+  --color-dark-surface: #0f172a;      /* Slate 900 */
 }
 
-.input-custom {
-    @apply w-full bg-slate-900 bg-opacity-50 border border-white/10 rounded-xl px-4 text-white focus:border-softcon-secondary focus:ring-1 focus:ring-softcon-secondary outline-none;
+/* 2. Estilos Base */
+@layer base {
+  :root {
+    font-family: "Segoe UI", system-ui, sans-serif;
+    color-scheme: dark;
+  }
+
+  body {
+    @apply bg-slate-950 text-slate-50 min-h-screen overflow-x-hidden;
+    /* Fondo con gradiente sutil para profundidad */
+    background: radial-gradient(circle at top right, #1e1b4b, #020617);
+  }
 }
 
-:root {
-    --primary-color: #facc15;
-    --secondary-color: #8b5cf6;
-    --glow-color: rgba(139, 92, 246, 0.6);
-    --bg-gradient: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-}
+/* 3. Componentes y Efectos Especiales "Construyendo tu Futuro" */
+@layer components {
+  
+  /* Efecto de Cristal (Glassmorphism) */
+  .glass-card {
+    @apply bg-slate-900/50 backdrop-blur-md border border-white/10 rounded-2xl shadow-xl;
+  }
 
-.softcon-theme {
-    background-color: #0a0a0a;
-    color: #ffffff;
-    font-family: "Segoe UI", sans-serif;
-}
+  /* Entradas de texto estilizadas */
+  .input-field {
+    @apply w-full bg-slate-900/80 border border-white/10 rounded-xl px-4 py-3 
+           text-white outline-none transition-all duration-300
+           focus:border-softcon-secondary focus:ring-2 focus:ring-softcon-secondary/20;
+  }
 
-/* Marca de agua sutil para la marca */
-.watermark-text-faded {
-    opacity: 0.1;
-    pointer-events: none;
-    user-select: none;
-}
+  /* Botón Principal con Resplandor */
+  .btn-primary {
+    @apply bg-softcon-primary text-slate-950 font-black px-6 py-3 rounded-xl
+           transition-all duration-300 hover:scale-105 active:scale-95
+           shadow-[0_0_20px_rgba(250,204,21,0.3)];
+  }
 
-/* Temas adicionales */
-.theme-register {
-    --primary-color: var(--register-primary);
-    --secondary-color: var(--register-secondary);
-    --glow-color: var(--register-glow);
-    --bg-gradient: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-}
-.theme-final {
-    --primary-color: var(--final-primary);
-    --secondary-color: var(--final-secondary);
-    --glow-color: var(--final-glow);
-    --bg-gradient: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-}
+  /* Botón Secundario (Violeta) */
+  .btn-secondary {
+    @apply bg-softcon-secondary text-white font-bold px-6 py-3 rounded-xl
+           transition-all duration-300 hover:shadow-[0_0_25px_rgba(139,92,246,0.5)];
+  }
 
-body {
-    background: #0a0a0a;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    margin: 0;
-    font-family: var(--font-sans); /* Utiliza la variable si la defines en root */
-    overflow: hidden;
-    padding: 1.5rem;
-    transition: background 0.8s ease;
-}
-
-/* Estilos para el texto con gradiente */
-.text-gradient {
-    background: linear-gradient(to bottom, #fff 20%, var(--primary-color) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    font-weight: 900;
-}
-
-/* Scrollbar personalizado para el contenido del formulario */
-.form-content {
-    flex: 1;
-    overflow-y: auto;
-    padding-right: 8px; /* Espacio para el scrollbar */
-    z-index: 5;
-}
-.form-content::-webkit-scrollbar { width: 4px; }
-.form-content::-webkit-scrollbar-thumb {
-    background: var(--primary-color);
-    border-radius: 10px;
-}
-
-/* Animación del borde resplandeciente */
-@keyframes moveGradient {
-        0% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
-}
-
-/* --- Estilos para la tarjeta giratoria de login/registro --- */
-.card-container {
-    width: 100%;
-    max-width: 410px;
-    min-height: 600px;
-    perspective: 1200px;
-    margin: auto;
-    position: relative;
-    z-index: 10;
-}
-.card-inner {
-    width: 100%;
-    min-height: 600px;
-    transition: transform 0.8s cubic-bezier(.4,2,.3,1), box-shadow 0.4s;
+  /* Animación de giro para el Login/Registro */
+  .flip-card-inner {
+    transition: transform 0.8s;
     transform-style: preserve-3d;
-    position: relative;
-}
-.card-inner.is-flipped {
+  }
+
+  .flipped {
     transform: rotateY(180deg);
-}
-.card-face {
-    position: absolute;
-    width: 100%;
-    min-height: 600px;
-    backface-visibility: hidden;
-    background: var(--bg-gradient, #18181b);
-    border-radius: 2rem;
-    box-shadow: 0 8px 40px 0 rgba(0,0,0,0.25), 0 0 0 1.5px rgba(255,255,255,0.08);
-    overflow: hidden;
-    padding: 2.5rem 2rem 2rem 2rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: stretch;
-}
-.face-login {
-    z-index: 2;
-}
-.face-register {
-    transform: rotateY(180deg);
-    z-index: 1;
-}
-.watermark-text {
-    position: absolute;
-    top: 2.5rem;
-    left: 0;
-    width: 100%;
-    text-align: center;
-    font-size: 5rem;
-    font-weight: 900;
-    color: #fff;
-    opacity: 0.07;
-    pointer-events: none;
-    user-select: none;
-    -webkit-user-select: none;
-    letter-spacing: 0.2em;
-    z-index: 0;
-}
-.logo-watermark {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-repeat: no-repeat;
-    background-position: center 2.5rem;
-    background-size: 120px 120px;
-    opacity: 0.08;
-    z-index: 0;
+  }
 }
 
+/* 4. Utilidades Personalizadas */
+@layer utilities {
+  .text-glow-primary {
+    text-shadow: 0 0 10px rgba(250, 204, 21, 0.5);
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-slate-700 rounded-full hover:bg-softcon-secondary;
+  }
+}
