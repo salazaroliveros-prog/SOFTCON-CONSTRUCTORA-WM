@@ -7,14 +7,19 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Colores corporativos SOFTCON-MYS-CONSTRU-WM
-        'softcon-yellow': '#facc15', // Amarillo principal
-        'softcon-purple': '#8b5cf6', // Violeta resplandeciente
-        'softcon-dark': '#0f172a',   // Fondo elegante
+        // Colores de SOFTCON-MYS-CONSTRU-WM
+        'softcon-primary': '#facc15', // Amarillo brillante
+        'softcon-secondary': '#8b5cf6', // Violeta Resplandeciente
+        'softcon-glow-main': 'rgba(139, 92, 246, 0.6)', // Glow principal
+
+        // Colores secundarios para estados
+        'register-primary': '#a855f7',
+        'register-secondary': '#3b82f6',
+        'final-glow': 'rgba(250, 204, 21, 0.8)',
       },
-      boxShadow: {
-        'glow-purple': '0 0 20px rgba(139, 92, 246, 0.4)',
-      }
+      fontFamily: {
+        sans: ['"Segoe UI"', 'system-ui', 'sans-serif'],
+      },
     },
   },
   plugins: [],

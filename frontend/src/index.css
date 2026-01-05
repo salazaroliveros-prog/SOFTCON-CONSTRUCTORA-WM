@@ -1,37 +1,45 @@
-.watermark-text-faded {
-    opacity: 0.1;
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Aire y estilo uniforme para inputs, selects y botones */
+input, select, button {
+    height: 48px;
+    transition: all 0.2s ease-in-out;
 }
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+.input-custom {
+    @apply w-full bg-slate-900/50 border border-white/10 rounded-xl px-4 text-white focus:border-softcon-secondary focus:ring-1 focus:ring-softcon-secondary outline-none;
+}
 
 :root {
-    --primary-color: #facc15; /* Amarillo brillante */
-    --secondary-color: #8b5cf6; /* Violeta Resplandeciente */
+    --primary-color: #facc15;
+    --secondary-color: #8b5cf6;
     --glow-color: rgba(139, 92, 246, 0.6);
-    --bg-gradient: linear-gradient(135deg, #facc15 0%, #8b5cf6 100%);
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-/* Estilos globales y variables CSS */
-:root {
-    /* Se usarán las clases de Tailwind con los colores softcon-primary, etc. */
-    /* Las variables CSS aquí son para los gradientes y el glow que usan var() directamente en el HTML original */
-    --primary-color: var(--softcon-primary);
-    --secondary-color: var(--softcon-secondary);
-    --glow-color: var(--softcon-glow-main);
     --bg-gradient: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
 }
 
+.softcon-theme {
+    background-color: #0a0a0a;
+    color: #ffffff;
+    font-family: "Segoe UI", sans-serif;
+}
+
+/* Marca de agua sutil para la marca */
+.watermark-text-faded {
+    opacity: 0.1;
+    pointer-events: none;
+    user-select: none;
+}
+
+/* Temas adicionales */
 .theme-register {
     --primary-color: var(--register-primary);
     --secondary-color: var(--register-secondary);
     --glow-color: var(--register-glow);
     --bg-gradient: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
 }
-
 .theme-final {
     --primary-color: var(--final-primary);
     --secondary-color: var(--final-secondary);
