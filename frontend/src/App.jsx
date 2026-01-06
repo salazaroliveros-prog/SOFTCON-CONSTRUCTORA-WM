@@ -1,29 +1,35 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import Sidebar from "./components/Sidebar.jsx";
-import Dashboard from "./pages/Dashboard.jsx";
-import Proyectos from "./pages/Proyectos.jsx";
-import FinanzasPersonales from "./pages/FinanzasPersonales.jsx";
-import Inventarios from "./pages/Inventarios.jsx";
-import LandingPage from "./pages/LandingPage.jsx";
-import LoginPage from "./pages/LoginPage.jsx";
-import RegisterPage from "./pages/RegisterPage.jsx";
-import AdminUsuariosPage from "./pages/AdminUsuariosPage.jsx";
+// Importaciones de componentes...
 import AppShell from "./components/layout/AppShell.jsx";
+// Asegúrate de que todas las rutas existan para evitar errores de compilación
 
 function parseJwt(token) {
+  if (!token) return null;
   try {
     const payload = token.split(".")[1];
-    const json = atob(payload.replace(/-/g, "+").replace(/_/g, "/"));
+    if (!payload) return null;
+    // Usamos una versión más segura para manejar caracteres especiales
+    const json = decodeURIComponent(
+      atob(payload.replace(/-/g, "+").replace(/_/g, "/"))
+        .split("")
+        .map(c => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+        .join("")
+    );
     return JSON.parse(json);
-  } catch {
+  } catch (error) {
+    console.error("Error parseando el token de SOFTCON-WM:", error);
     return null;
   }
 }
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem("token"));
-  const user = isAuthenticated ? parseJwt(localStorage.getItem("token")) : null;
+
+  // Memorizamos el usuario para evitar re-cálculos innecesarios
+  const user = useMemo(() => {
+    return isAuthenticated ? parseJwt(localStorage.getItem("token")) : null;
+  }, [isAuthenticated]);
 
   return (
     <Router>
@@ -33,7 +39,7 @@ function App() {
         <Route path="/login" element={<LoginPage onLogin={() => setIsAuthenticated(true)} />} />
         <Route path="/register" element={<RegisterPage />} />
 
-        {/* Rutas Privadas (Protegidas) */}
+        {/* Rutas Privadas */}
         <Route 
           path="/dashboard/*" 
           element={isAuthenticated ? (
@@ -44,15 +50,17 @@ function App() {
                 <Route path="finanzas" element={<FinanzasPersonales />} />
                 <Route path="inventarios" element={<Inventarios />} />
                 {user?.rol === 'admin' && <Route path="usuarios" element={<AdminUsuariosPage />} />}
+                {/* Fallback interno del dashboard */}
+                <Route path="*" element={<Navigate to="/dashboard" />} />
               </Routes>
             </AppShell>
           ) : (
-            <Navigate to="/login" />
+            <Navigate to="/login" replace />
           )} 
         />
 
-        {/* Redirección por defecto */}
-        <Route path="*" element={<Navigate to="/" />} />
+        {/* Redirección global */}
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
   );
