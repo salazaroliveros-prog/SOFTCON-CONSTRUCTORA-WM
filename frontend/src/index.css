@@ -1,25 +1,18 @@
 @import "tailwindcss";
 
-/* --- SOFTCON-CONSTRU-WM: Componentes y Utilidades Personalizadas --- */
 
-/* Glassmorphism Card */
-.glass-card {
-  @apply bg-slate-900 bg-opacity-50 backdrop-blur-md border border-white border-opacity-10 rounded-2xl shadow-xl;
-}
+@layer components {
+  .login-container {
+    @apply w-full max-w-md mx-auto p-8 bg-slate-900 bg-opacity-80 backdrop-blur-xl border border-white border-opacity-10 rounded-3xl shadow-2xl;
+  }
 
-/* Input Field */
-.input-field {
-  @apply w-full bg-slate-900 bg-opacity-80 border border-white border-opacity-10 rounded-xl px-4 py-3 text-white outline-none transition-all duration-300 focus:border-softcon-secondary focus:ring-2 focus:ring-softcon-secondary bg-opacity-20;
-}
+  .input-field {
+    @apply w-full bg-slate-950 bg-opacity-50 border border-white border-opacity-10 rounded-xl px-4 py-3 text-white placeholder:text-slate-500 outline-none focus:ring-2 focus:ring-softcon-secondary bg-opacity-50 transition-all mb-4;
+  }
 
-/* Botón Principal con Resplandor */
-.btn-primary {
-  @apply bg-softcon-primary text-slate-950 font-black px-6 py-3 rounded-xl transition-all duration-300 hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(250,204,21,0.3)];
-}
-
-/* Botón Secundario (Violeta) */
-.btn-secondary {
-  @apply bg-softcon-secondary text-white font-bold px-6 py-3 rounded-xl transition-all duration-300 hover:shadow-[0_0_25px_rgba(139,92,246,0.5)];
+  .btn-access {
+    @apply w-full bg-softcon-primary text-black font-black py-3 rounded-xl hover:scale-[1.02] active:scale-95 transition-transform;
+  }
 }
 
 /* Flip Card Animación para Login/Registro */

@@ -3,12 +3,12 @@ import Sidebar from '../Sidebar';
 
 export default function AppShell({ children, user }) {
   return (
-    <div className="flex h-screen bg-slate-900 overflow-hidden">
+    <div className="min-h-screen bg-slate-900 flex flex-col md:flex-row">
       {/* Sidebar fijo a la izquierda */}
       <Sidebar user={user} />
 
-      {/* Área de contenido con scroll independiente */}
-      <main className="flex-1 overflow-y-auto p-8 bg-slate-900">
+      {/* Área de contenido responsiva y centrada */}
+      <main className="flex-1 flex flex-col items-center justify-center px-2 py-6 md:p-8 bg-slate-900 overflow-y-auto w-full max-w-6xl mx-auto">
         {children}
       </main>
     </div>

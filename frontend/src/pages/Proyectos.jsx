@@ -1,3 +1,6 @@
+import React, { useState, useEffect } from 'react';
+import { LayoutGrid, List, Plus, Search, HardHat, Calendar, DollarSign } from 'lucide-react';
+import api from '../api';
 // Ejemplo de formulario visualmente ordenado con Tailwind
 function FormularioEjemplo() {
   return (
