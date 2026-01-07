@@ -1,12 +1,7 @@
+
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-
-const logoModules = import.meta.glob('../assets/REDISEÑO_ICONO.jpg', {
-  eager: true,
-  import: 'default',
-});
-
-const logoWM = Object.values(logoModules)?.[0] ?? null;
+import logoWM from '../assets/REDISEÑO_ICONO.jpg';
 
 const LandingPage = () => {
   const navigate = useNavigate();
