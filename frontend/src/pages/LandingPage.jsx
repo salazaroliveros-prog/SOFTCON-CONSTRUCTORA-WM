@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import logoWM from '../assets/REDISEÑO_ICONO.jpg';
+const logoWM = '/icons.png';
 
 const LandingPage = () => {
   const navigate = useNavigate();
