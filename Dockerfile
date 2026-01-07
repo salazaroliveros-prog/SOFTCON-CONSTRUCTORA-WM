@@ -19,4 +19,4 @@ COPY backend /app/backend
 # Keep it aligned with the PORT value the runtime provides (often 8080).
 EXPOSE 8080
 
-CMD sh -c "uvicorn backend.main:app --host 0.0.0.0 --port ${PORT:-8080}"
+CMD sh -c "uvicorn backend.main:app --host 0.0.0.0 --port ${PORT}"
