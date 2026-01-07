@@ -8,8 +8,10 @@ export default function AppShell({ children, user }) {
       <Sidebar user={user} />
 
       {/* Área de contenido responsiva y centrada */}
-      <main className="flex-1 flex flex-col items-center justify-center px-2 py-6 md:p-8 bg-slate-900 overflow-y-auto w-full max-w-6xl mx-auto">
-        {children}
+      <main className="flex-1 flex flex-col items-center justify-start px-2 py-6 md:p-8 bg-slate-900 overflow-y-auto w-full">
+        <div className="w-full max-w-6xl mx-auto">
+          {children}
+        </div>
       </main>
     </div>
   );
