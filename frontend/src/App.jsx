@@ -35,7 +35,7 @@ function App() {
     <Router>
       <Routes>
         {/* Rutas Públicas */}
-        <Route path="/" element={<LandingPage />} />
+        <Route path="/" element={<LoginPage onLogin={() => setIsAuthenticated(true)} />} />
         <Route path="/login" element={<LoginPage onLogin={() => setIsAuthenticated(true)} />} />
         <Route path="/register" element={<RegisterPage />} />
         {/* Ejemplo Zustand */}
