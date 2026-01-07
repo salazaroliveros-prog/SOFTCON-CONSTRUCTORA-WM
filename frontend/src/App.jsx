@@ -2,6 +2,8 @@ import React, { useState, useMemo } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import AppShell from "./components/layout/AppShell.jsx";
 import CounterExample from "./CounterExample.jsx";
+import LoginPage from "./pages/LoginPage.jsx";
+import RegisterPage from "./pages/RegisterPage.jsx";
 // Asegúrate de que todas las rutas existan para evitar errores de compilación
 
 function parseJwt(token) {
