@@ -1,24 +1,29 @@
-# Build stage
-FROM node:20-alpine AS build
-WORKDIR /app
 
-COPY package*.json ./
-RUN npm ci
-
-COPY . .
-
-ARG VITE_API_URL
-ENV VITE_API_URL=${VITE_API_URL}
-
+# --- ETAPA 1: Construir el Frontend (React + Vite) ---
+FROM node:20-alpine AS frontend-builder
+WORKDIR /app/frontend
+COPY frontend/package*.json ./
+RUN npm install
+COPY frontend/ ./
 RUN npm run build
 
-# Runtime stage
-FROM nginx:alpine
+# --- ETAPA 2: Configurar el Backend (Python) ---
+FROM python:3.11-slim
+WORKDIR /app
 
-# SPA config
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Instalar dependencias de Python desde la carpeta backend
+COPY backend/requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Static assets
-COPY --from=build /app/dist /usr/share/nginx/html
+# Copiar todo el contenido de la carpeta backend
+COPY backend/ .
 
-EXPOSE 80
+# Copiar la carpeta 'dist' (generada en la Etapa 1) a una carpeta llamada 'static'
+COPY --from=frontend-builder /app/frontend/dist ./static
+
+# Configuración de puerto para Railway
+ENV PORT=8080
+EXPOSE 8080
+
+# Comando para arrancar Uvicorn apuntando a main.py dentro de la carpeta actual
+CMD sh -c "uvicorn main:app --host 0.0.0.0 --port ${PORT}"
