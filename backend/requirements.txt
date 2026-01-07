@@ -15,8 +15,8 @@ python-multipart>=0.0.6
 
 
 # Data Validation
-pydantic>=2.0.0
-pydantic-settings>=2.0.0
+pydantic>=1.10.0,<2.0.0
+# pydantic-settings>=2.0.0  # Comentado, requiere pydantic 2.x, no compatible con fastapi-utils
 
 # Environment Variables
 python-dotenv>=1.0.0
@@ -24,7 +24,6 @@ python-dotenv>=1.0.0
 
 fastapi-utils
 typing-inspect
-pydantic>=1.10.0,<2.0.0
 
 # PDF Generation (if needed)
 reportlab>=4.0.0
