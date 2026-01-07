@@ -1,22 +1,24 @@
-# Railway will auto-detect this Dockerfile.
-# Backend (FastAPI) + Supabase Postgres
-
-FROM python:3.12-slim
-
-ENV PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1
-
+# Build stage
+FROM node:20-alpine AS build
 WORKDIR /app
 
-# System deps for psycopg2-binary are not required; keep image small.
+COPY package*.json ./
+RUN npm ci
 
-COPY backend/requirements.txt /app/backend/requirements.txt
-RUN pip install --no-cache-dir -r /app/backend/requirements.txt
+COPY . .
 
-COPY backend /app/backend
+ARG VITE_API_URL
+ENV VITE_API_URL=${VITE_API_URL}
 
-# Railway's HTTP proxy commonly targets the container's exposed port.
-# Keep it aligned with the PORT value the runtime provides (often 8080).
-EXPOSE 8080
+RUN npm run build
 
-CMD sh -c "uvicorn backend.main:app --host 0.0.0.0 --port ${PORT}"
+# Runtime stage
+FROM nginx:alpine
+
+# SPA config
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Static assets
+COPY --from=build /app/dist /usr/share/nginx/html
+
+EXPOSE 80
