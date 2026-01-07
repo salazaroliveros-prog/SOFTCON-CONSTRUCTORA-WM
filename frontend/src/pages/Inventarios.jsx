@@ -31,7 +31,7 @@ export default function Inventarios() {
           <h1 className="text-3xl font-black text-white">📦 Inventario en Obra</h1>
           <p className="text-slate-400">Control de materiales y suministros.</p>
         </div>
-        <button className="bg-softcon-primary text-black px-6 py-2 rounded-xl font-bold hover:scale-105 transition">
+        <button className="bg-[#facc15] text-black px-6 py-2 rounded-xl font-bold hover:scale-105 transition">
           + Agregar Material
         </button>
       </div>
@@ -39,7 +39,7 @@ export default function Inventarios() {
       {/* 2. Cuerpo: Grid de contenido */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Tabla de Inventario (Ocupa 2 columnas) */}
-        <div className="lg:col-span-2 bg-slate-800 bg-opacity-50 rounded-2xl border border-white/5 overflow-hidden">
+        <div className="lg:col-span-2 bg-slate-800/50 rounded-2xl border border-white/5 overflow-hidden">
           <div className="flex justify-end p-4">
             <div className="relative w-72">
               <input
@@ -47,7 +47,7 @@ export default function Inventarios() {
                 placeholder="Buscar material..."
                 value={busqueda}
                 onChange={e => setBusqueda(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 bg-slate-900 bg-opacity-50 border border-white/10 rounded-full text-white outline-none focus:ring-2 focus:ring-softcon-secondary"
+                className="w-full pl-10 pr-4 py-2 bg-slate-900/50 border border-white/10 rounded-full text-white outline-none focus:ring-2 focus:ring-[#8b5cf6]"
               />
               <span className="absolute left-3 top-2.5 text-slate-400">
                 <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" strokeWidth="2" d="M21 21l-4.35-4.35m1.1-4.4a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
@@ -55,7 +55,7 @@ export default function Inventarios() {
             </div>
           </div>
           <table className="w-full text-left">
-            <thead className="bg-slate-700 bg-opacity-50 text-slate-300 text-sm uppercase">
+            <thead className="bg-slate-700/50 text-slate-300 text-sm uppercase">
               <tr>
                 <th className="px-6 py-4">Material</th>
                 <th className="px-6 py-4">Stock</th>
@@ -87,7 +87,7 @@ export default function Inventarios() {
         </div>
 
         {/* Formulario de ajuste rápido (Ocupa 1 columna) */}
-        <div className="bg-slate-800 bg-opacity-50 p-6 rounded-2xl border border-white/5 h-fit">
+        <div className="bg-slate-800/50 p-6 rounded-2xl border border-white/5 h-fit">
           <h3 className="text-white font-bold mb-4">Ajuste de Stock</h3>
           <div className="space-y-4">
             <div>
@@ -97,7 +97,7 @@ export default function Inventarios() {
                 value={materialSeleccionado?.descripcion || ''}
                 placeholder="Selecciona un material de la tabla"
                 readOnly
-                className="w-full bg-slate-900 bg-opacity-50 border border-white/10 p-3 rounded-xl text-white outline-none"
+                className="w-full bg-slate-900/50 border border-white/10 p-3 rounded-xl text-white outline-none"
               />
             </div>
             <div>
@@ -107,12 +107,12 @@ export default function Inventarios() {
                 value={cantidad}
                 onChange={e => setCantidad(e.target.value)}
                 placeholder="Cantidad"
-                className="w-full bg-slate-900 bg-opacity-50 border border-white/10 p-3 rounded-xl text-white outline-none"
+                className="w-full bg-slate-900/50 border border-white/10 p-3 rounded-xl text-white outline-none"
               />
             </div>
             <div className="flex justify-end gap-2 mt-2">
               <button type="button" className="text-slate-400 font-bold px-4 py-2 rounded-xl" onClick={() => { setMaterialSeleccionado(null); setCantidad(''); }}>Cancelar</button>
-              <button type="button" className="bg-softcon-primary text-black font-bold px-4 py-2 rounded-xl hover:scale-105 transition">Guardar</button>
+              <button type="button" className="bg-[#facc15] text-black font-bold px-4 py-2 rounded-xl hover:scale-105 transition">Guardar</button>
             </div>
           </div>
         </div>

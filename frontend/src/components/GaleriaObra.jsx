@@ -40,7 +40,7 @@ const GaleriaObra = ({ proyectoId }) => {
               alt="Avance"
               className="object-cover w-full h-full transition transform group-hover:scale-110"
             />
-            <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 p-2 text-[10px] text-white opacity-0 group-hover:opacity-100 transition">
+            <div className="absolute bottom-0 left-0 right-0 bg-black/50 p-2 text-[10px] text-white opacity-0 group-hover:opacity-100 transition">
               {foto.fecha_registro ? new Date(foto.fecha_registro).toLocaleDateString() : ''}
             </div>
           </div>

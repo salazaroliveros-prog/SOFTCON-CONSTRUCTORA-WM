@@ -8,7 +8,7 @@ const money = (value) => {
 };
 
 const StatCard = ({ title, value, tone = "sky" }) => (
-  <div className={`p-4 rounded-xl border bg-slate-900 bg-opacity-50 ${tone === 'sky' ? 'border-sky-400/40' : 'border-rose-400/40'}`}>
+  <div className={`p-4 rounded-xl border bg-slate-900/50 ${tone === 'sky' ? 'border-sky-400/40' : 'border-rose-400/40'}`}>
     <p className="text-sm text-slate-400">{title}</p>
     <p className="text-2xl font-black">{value}</p>
   </div>

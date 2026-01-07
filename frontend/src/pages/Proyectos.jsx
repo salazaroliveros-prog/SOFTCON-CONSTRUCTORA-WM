@@ -4,7 +4,7 @@ import api from '../api';
 // Ejemplo de formulario visualmente ordenado con Tailwind
 function FormularioEjemplo() {
   return (
-    <div className="max-w-lg mx-auto bg-slate-900 bg-opacity-80 p-8 rounded-2xl shadow-2xl border border-white/10 space-y-6">
+    <div className="max-w-lg mx-auto bg-slate-900/80 p-8 rounded-2xl shadow-2xl border border-white/10 space-y-6">
       <h2 className="text-2xl font-black text-softcon-primary mb-4">Nuevo Proyecto</h2>
       <form className="space-y-4">
         <div>
@@ -73,18 +73,18 @@ export default function Proyectos() {
           <div className="flex bg-slate-900/50 p-1 rounded-xl border border-white/5">
             <button 
               onClick={() => setViewMode('grid')}
-              className={`p-2 rounded-lg transition ${viewMode === 'grid' ? 'bg-softcon-secondary text-white' : 'text-slate-400 hover:text-white'}`}
+              className={`p-2 rounded-lg transition ${viewMode === 'grid' ? 'bg-[#8b5cf6] text-white' : 'text-slate-400 hover:text-white'}`}
             >
               <LayoutGrid size={20} />
             </button>
             <button 
               onClick={() => setViewMode('list')}
-              className={`p-2 rounded-lg transition ${viewMode === 'list' ? 'bg-softcon-secondary text-white' : 'text-slate-400 hover:text-white'}`}
+              className={`p-2 rounded-lg transition ${viewMode === 'list' ? 'bg-[#8b5cf6] text-white' : 'text-slate-400 hover:text-white'}`}
             >
               <List size={20} />
             </button>
           </div>
-          <button className="flex items-center gap-2 bg-softcon-primary text-black font-bold px-5 py-2.5 rounded-xl hover:scale-105 transition shadow-lg shadow-softcon-primary/20">
+          <button className="flex items-center gap-2 bg-[#facc15] text-black font-bold px-5 py-2.5 rounded-xl hover:scale-105 transition shadow-lg shadow-[0_4px_20px_#facc15]/20">
             <Plus size={20} /> Nuevo Proyecto
           </button>
         </div>
@@ -121,7 +121,7 @@ export default function Proyectos() {
           {proyectos.map((proyecto) => (
             <div key={proyecto.id} className="bg-slate-900/40 border border-white/10 rounded-3xl p-6 hover:border-softcon-secondary/50 transition-all group">
               <div className="flex justify-between items-start mb-4">
-                <div className="bg-softcon-secondary/20 p-3 rounded-2xl text-softcon-secondary group-hover:bg-softcon-secondary group-hover:text-white transition-colors">
+                <div className="bg-[#8b5cf6]/20 p-3 rounded-2xl text-[#8b5cf6] group-hover:bg-[#8b5cf6] group-hover:text-white transition-colors">
                   <HardHat size={24} />
                 </div>
                 <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${
