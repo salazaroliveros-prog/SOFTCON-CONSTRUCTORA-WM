@@ -5,7 +5,7 @@
 if (-not (Get-Command choco -ErrorAction SilentlyContinue)) {
     Set-ExecutionPolicy Bypass -Scope Process -Force
     [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
-    iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+    Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
 }
 
 # Instala Node.js, Python, Git y Supabase CLI
@@ -21,17 +21,18 @@ if (-not (Test-Path "SOFTCON-CONSTRU-WM-02")) {
     git clone https://github.com/salazaroliveros-prog/SOFTCON-CONSTRUCTORA-WM.git
 }
 
+
 # Instala dependencias del backend
-cd SOFTCON-CONSTRU-WM-02/backend
+Set-Location SOFTCON-CONSTRU-WM-02/backend
 python -m venv .venv
-.\.venv\Scripts\activate
+.\.venv\Scripts\Activate.ps1
 pip install --upgrade pip
 pip install -r requirements.txt
-cd ..
+Set-Location ../..
 
 # Instala dependencias del frontend
-cd frontend
+Set-Location frontend
 npm install
-cd ..
+Set-Location ..
 
 Write-Host "Instalación completada. Configura tus variables y ejecuta los servicios según la documentación."
