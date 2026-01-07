@@ -1,3 +1,33 @@
+# Guía de despliegue multiplataforma
+
+## Windows
+1. Descarga y ejecuta `install-windows.ps1` como Administrador:
+  - Haz clic derecho en el archivo y selecciona "Ejecutar con PowerShell".
+2. Sigue las instrucciones en pantalla.
+
+## Mac/Linux
+1. Abre una terminal y ejecuta:
+  ```bash
+  bash install-unix.sh
+  ```
+2. Sigue las instrucciones en pantalla.
+
+## Móviles/Tablets
+- Accede desde el navegador web. El sistema es compatible y responsivo.
+- Para experiencia tipo app, instala como PWA desde el navegador.
+
+## Requisitos generales
+- Acceso a internet para la instalación inicial.
+- Permisos de administrador para instalar dependencias.
+- Configura variables de entorno y credenciales según la documentación del proyecto.
+
+## Notas
+- Reemplaza `<URL_DEL_REPOSITORIO>` en los scripts por la URL real de tu repositorio.
+- Si usas Supabase, asegúrate de tener el CLI instalado y vinculado.
+- Consulta la documentación para comandos de desarrollo y producción.
+
+---
+¿Dudas? Contacta al equipo técnico o revisa la documentación oficial incluida en el proyecto.
 # Deploy: GitHub + Supabase + Railway + Vercel
 
 This repo is a small monorepo:
