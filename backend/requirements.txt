@@ -1,6 +1,6 @@
 # FastAPI and ASGI Server
-fastapi>=0.100.0
-uvicorn[standard]>=0.23.0
+fastapi
+uvicorn
 
 # Database
 sqlalchemy>=2.0.0
@@ -12,8 +12,7 @@ python-jose[cryptography]>=3.3.0
 passlib[bcrypt]>=1.7.4
 python-multipart>=0.0.6
 
-# AI/LLM Integration
-openai>=1.0.0
+
 
 # Data Validation
 pydantic>=2.0.0
@@ -22,8 +21,10 @@ pydantic-settings>=2.0.0
 # Environment Variables
 python-dotenv>=1.0.0
 
-# Utilities
-fastapi-utils>=0.2.1
+
+fastapi-utils
+typing-inspect
+pydantic>=1.10.0,<2.0.0
 
 # PDF Generation (if needed)
 reportlab>=4.0.0
@@ -39,4 +40,5 @@ python-dateutil>=2.8.0
 pytest>=7.0.0
 pytest-asyncio>=0.21.0
 typing_inspect
+APScheduler
 httpx>=0.28.0
