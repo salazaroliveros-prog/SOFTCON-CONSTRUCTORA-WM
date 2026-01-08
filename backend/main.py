@@ -41,7 +41,7 @@ app = FastAPI()
 # Endpoint de salud para pruebas automatizadas
 @app.get("/health")
 def health_check():
-    return {"ok": True}
+    return {"status": "ok"}
 from backend import models
 from backend.utils.pdf_gen import generar_pdf_presupuesto, generar_pdf_presupuesto_profesional
 from backend.utils.normas import calcular_insumos_por_renglon, calcular_insumos_por_renglon_detallado
@@ -55,7 +55,7 @@ app = FastAPI()
 # Endpoint de salud para pruebas automatizadas
 @app.get("/health")
 def health_check():
-    return {"ok": True}
+    return {"status": "ok"}
 
 # Montar la carpeta 'public' para CSS, JS e Imágenes
 public_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'frontend', 'public'))
