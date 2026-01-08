@@ -10,4 +10,8 @@ export default defineConfig({
   // Si tienes assets globales, ponlos en /frontend/public
   // Vite los copiará automáticamente al build final
   publicDir: 'public', // Es el valor por defecto, pero puedes especificarlo explícitamente
+  server: {
+    port: process.env.PORT ? parseInt(process.env.PORT) : 5173,
+    host: true,
+  },
 })

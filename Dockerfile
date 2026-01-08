@@ -1,4 +1,3 @@
-
 # --- ETAPA 1: Construir el Frontend (React + Vite) ---
 FROM node:20-alpine AS frontend-builder
 WORKDIR /app/frontend

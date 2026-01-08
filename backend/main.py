@@ -40,7 +40,14 @@ from backend.utils.normas import calcular_insumos_por_renglon, calcular_insumos_
 from backend.utils.matriz_maestra import obtener_matriz_renglones_maestra
 from backend.utils.csv_import import procesar_csv_maestro
 from backend.whatsapp_service import enviar_resumen_diario
+
 app = FastAPI()
+
+# Montar la carpeta 'public' para CSS, JS e Imágenes
+public_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'frontend', 'public'))
+if os.path.isdir(public_dir):
+    app.mount("/public", StaticFiles(directory=public_dir), name="public")
+
 
 
 class BootstrapAdminRequest(BaseModel):
@@ -193,9 +200,22 @@ app.add_middleware(
 )
 
 
+
+# Ruta para servir el index.html principal
 @app.get("/")
-def read_root():
-    return {"status": "Online", "msg": "API Construct-ERP Activa"}
+async def read_index():
+    index_path = os.path.join(public_dir, 'index.html')
+    if os.path.isfile(index_path):
+        return FileResponse(index_path)
+    return {"status": "Online", "msg": "API Construct-ERP Activa (sin index.html)"}
+
+# Ruta para el Dashboard (considerando estructura public/pages/)
+@app.get("/dashboard")
+async def read_dashboard():
+    dashboard_path = os.path.join(public_dir, 'pages', 'dashboard.html')
+    if os.path.isfile(dashboard_path):
+        return FileResponse(dashboard_path)
+    return {"error": "dashboard.html no encontrado"}
 
 
 @app.post("/apu/normas/insumos")
