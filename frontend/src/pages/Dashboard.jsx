@@ -1,8 +1,9 @@
+
 import React, { useEffect, useState } from "react";
 import { Briefcase, Wallet, HardHat } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import api from "../api";
-import React from 'react';
+import supabase from "../supabaseClient";
 
 const money = (value) => {
   return new Intl.NumberFormat("es-GT", { style: "currency", currency: "GTQ" }).format(value ?? 0);
@@ -17,22 +18,55 @@ const StatCard = ({ title, value, tone = "sky" }) => (
 
 export default function Dashboard() {
   const [metricas, setMetricas] = useState({ ingresos: 0, egresos_materiales: 0, utilidad_neta: 0 });
+  const [usuariosActivos, setUsuariosActivos] = useState([]);
+  // Considera "activo" a quien tenga ultima_conexion < 5 minutos
+  useEffect(() => {
+    const fetchUsuariosActivos = async () => {
+      // Asegúrate de que la tabla usuarios tenga un campo 'ultima_conexion' tipo timestamp
+      const cincoMinutosAtras = new Date(Date.now() - 5 * 60 * 1000).toISOString();
+      const { data, error } = await supabase
+        .from('usuarios')
+        .select('id, username, email, nombre, telefono, rol, ultima_conexion')
+        .gte('ultima_conexion', cincoMinutosAtras);
+      if (!error) setUsuariosActivos(data || []);
+    };
+    fetchUsuariosActivos();
+    // Opcional: refrescar cada 30s
+    const interval = setInterval(fetchUsuariosActivos, 30000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className="p-6 space-y-6">
       <h1 className="text-3xl font-black text-white">SOFTCON-MYS-CONSTRU-WM</h1>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <StatCard title="Ingresos Totales" value={money(metricas.ingresos)} />
         <StatCard title="Gastos Materiales" value={money(metricas.egresos_materiales)} tone="red" />
         <StatCard title="Utilidad Neta" value={money(metricas.utilidad_neta)} />
       </div>
 
+      {/* Usuarios activos */}
+      <div className="bg-slate-900/40 p-6 rounded-2xl border border-white/10 mt-6">
+        <h2 className="text-lg font-bold mb-4">Usuarios activos (últimos 5 min)</h2>
+        <ul className="divide-y divide-slate-700">
+          {usuariosActivos.length === 0 && <li className="text-slate-400">Ningún usuario activo</li>}
+          {usuariosActivos.map(u => (
+            <li key={u.id} className="py-2 flex flex-col md:flex-row md:items-center md:gap-4">
+              <span className="font-bold text-white">{u.nombre || u.username}</span>
+              <span className="text-xs text-slate-400">{u.email}</span>
+              <span className="text-xs text-slate-400">{u.rol}</span>
+              <span className="text-xs text-slate-500 ml-auto">{u.ultima_conexion ? new Date(u.ultima_conexion).toLocaleTimeString() : ''}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
       <div className="bg-slate-900/40 p-6 rounded-2xl border border-white/10">
         <h2 className="text-lg font-bold mb-4">Análisis de Costos vs. Ingresos</h2>
         <div className="h-[300px]">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={[]}>
+            <BarChart data={[]}> 
               <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
               <XAxis dataKey="name" />
               <YAxis />
