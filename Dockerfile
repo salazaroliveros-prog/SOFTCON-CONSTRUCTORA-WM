@@ -26,4 +26,4 @@ ENV PORT=8080
 EXPOSE 8080
 
 # Comando para arrancar Uvicorn apuntando a backend/main.py
-CMD ["sh", "-c", "uvicorn backend.main:app --host 0.0.0.0 --port $PORT"]
+CMD ["sh", "-c", "uvicorn backend.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
