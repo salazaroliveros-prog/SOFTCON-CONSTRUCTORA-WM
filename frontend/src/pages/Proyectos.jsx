@@ -1,11 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { LayoutGrid, List, Plus, Search, HardHat, Calendar, DollarSign } from 'lucide-react';
 import api from '../api';
+import { proyectosApi } from '../api/services';
+import APUResultCard from '../components/APUResultCard';
+
+
+// Importa logo institucional si existe
+import logoSoftcon from '../public/REDISEÑO_ICONO.jpg';
 
 export default function Proyectos() {
   const [proyectos, setProyectos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState('grid'); // 'grid' o 'list'
+  // Estado para resultados IA por proyecto
+  const [apuResults, setApuResults] = useState({});
 
   useEffect(() => {
     fetchProyectos();
@@ -20,6 +28,22 @@ export default function Proyectos() {
       console.error("Error al cargar proyectos de SOFTCON-WM:", error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Ejemplo: función para generar APUs con IA para un proyecto
+  const handleGenerarAPUsIA = async (proyectoId) => {
+    const payload = {
+      cantidad_base: 100, // Ajustar según necesidad
+      departamento: 'Guatemala', // Ajustar según necesidad
+      // ...otros campos requeridos por el backend
+    };
+    setApuResults((prev) => ({ ...prev, [proyectoId]: { loading: true, data: null, error: null } }));
+    try {
+      const response = await proyectosApi.generarAPUsIA(proyectoId, payload);
+      setApuResults((prev) => ({ ...prev, [proyectoId]: { loading: false, data: response.data, error: null } }));
+    } catch (error) {
+      setApuResults((prev) => ({ ...prev, [proyectoId]: { loading: false, data: null, error: error?.response?.data?.detail || error.message } }));
     }
   };
 
@@ -108,6 +132,24 @@ export default function Proyectos() {
                   <DollarSign size={16} className="text-softcon-primary" />
                   <span className="text-xs font-bold">GTQ {proyecto.presupuesto?.toLocaleString()}</span>
                 </div>
+              </div>
+              {/* Botón para generar APUs IA y resultado */}
+              <div className="pt-4 flex flex-col gap-2">
+                <button
+                  className="bg-[#8b5cf6] text-white px-4 py-2 rounded-lg hover:bg-[#7c3aed] transition self-end"
+                  onClick={() => handleGenerarAPUsIA(proyecto.id)}
+                  disabled={apuResults[proyecto.id]?.loading}
+                >
+                  {apuResults[proyecto.id]?.loading ? 'Generando...' : 'Generar APUs IA'}
+                </button>
+                {apuResults[proyecto.id]?.data && (
+                  <APUResultCard resultado={apuResults[proyecto.id].data} logoUrl={logoSoftcon} />
+                )}
+                {apuResults[proyecto.id]?.error && (
+                  <div className="bg-red-900/80 rounded-lg p-3 mt-2 text-xs text-red-300">
+                    <strong>Error:</strong> {apuResults[proyecto.id].error}
+                  </div>
+                )}
               </div>
             </div>
           ))}

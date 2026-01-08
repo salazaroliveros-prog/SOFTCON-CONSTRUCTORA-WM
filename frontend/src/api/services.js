@@ -17,6 +17,10 @@ export const proyectosApi = {
     return api.post('/proyectos', data);
   },
   getFinanzas: (id) => api.get(`/finanzas/estado-resultado/${id}`),
+
+  // Integra endpoint IA para generación de APUs
+  generarAPUsIA: (proyectoId, payload) =>
+    api.post(`/proyectos/${proyectoId}/presupuesto/inyectar-matriz-y-apus`, payload),
 };
 
 export const inventarioApi = {
