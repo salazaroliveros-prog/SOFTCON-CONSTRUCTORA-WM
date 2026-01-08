@@ -18,12 +18,16 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copiar todo el contenido de la carpeta backend
 COPY backend/ .
 
+
 # Copiar la carpeta 'dist' (generada en la Etapa 1) a una carpeta llamada 'static'
 COPY --from=frontend-builder /app/frontend/dist ./static
+
+# Asegúrate de que el código se copie a la raíz del contenedor
+COPY . .
 
 # Configuración de puerto para Railway
 ENV PORT=8080
 EXPOSE 8080
 
-# Comando para arrancar Uvicorn apuntando a backend/main.py
-CMD ["sh", "-c", "uvicorn backend.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
+# El comando de ejecución con el Shell activado para leer el puerto
+CMD ["sh", "-c", "PYTHONPATH=. uvicorn backend.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
