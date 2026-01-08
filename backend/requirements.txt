@@ -1,6 +1,6 @@
 # FastAPI and ASGI Server
-fastapi
-uvicorn
+fastapi>=0.100.0
+uvicorn[standard]>=0.23.0
 
 # Database
 sqlalchemy>=2.0.0
@@ -12,25 +12,21 @@ python-jose[cryptography]>=3.3.0
 passlib[bcrypt]>=1.7.4
 python-multipart>=0.0.6
 
-
+# AI/LLM Integration
+openai>=1.0.0
 
 # Data Validation
 pydantic>=2.0.0
-# pydantic-settings>=2.0.0  # Comentado, requiere pydantic 2.x, no compatible con fastapi-utils
+pydantic-settings>=2.0.0
 
 # Environment Variables
 python-dotenv>=1.0.0
 
-
-fastapi-utils
+# Utilities
+fastapi-utils>=0.2.1
 typing-inspect
 
-# PDF Generation (if needed)
-reportlab>=4.0.0
-pypdf>=3.0.0
 
-# WhatsApp Integration (Twilio)
-twilio>=8.0.0
 
 # Date/Time Utilities
 python-dateutil>=2.8.0

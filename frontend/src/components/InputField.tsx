@@ -8,7 +8,7 @@ export default function InputField({ name, value, onChange, placeholder = '', ty
       value={value}
       onChange={onChange}
       placeholder={placeholder}
-      className="input-field"
+      className="w-full bg-slate-950/50 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-slate-500 outline-none focus:ring-2 focus:ring-[#8b5cf6] transition-all mb-4"
     />
   );
 }

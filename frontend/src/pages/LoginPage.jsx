@@ -66,33 +66,54 @@ export default function LoginPage({ onLogin }) {
           <div className="card-face face-login">
             <div className="watermark-text">M&S</div>
             <h2 className="text-4xl font-black text-gradient mb-4">INGRESA<br/>SOFTCON-WM</h2>
-            <form onSubmit={handleLogin} className="space-y-4 w-full">
+            <form
+              onSubmit={handleLogin}
+              className="w-full max-w-lg mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 px-2"
+            >
+              {/* Error visual */}
               {error && !isFlipped && (
-                <div className="rounded-xl border border-rose-400/20 bg-rose-500/10 px-3 py-2 text-sm text-rose-200">
+                <div className="md:col-span-2 rounded-xl border border-rose-400/20 bg-rose-500/10 px-3 py-2 text-sm text-rose-200 text-center w-full">
                   {error}
                 </div>
               )}
-              <label>Usuario / Correo</label>
-              <input
-                type="email"
-                value={usuario}
-                onChange={(e) => setUsuario(e.target.value)}
-                placeholder="ejemplo@dominio.com"
-                required
-                className="input-custom"
-              />
-              <label>Contraseña</label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                required
-                className="input-custom"
-              />
-              <button className="btn-custom w-full" disabled={loading}>
-                {loading ? "Entrando..." : "Acceder Ahora"}
-              </button>
+              {/* Usuario */}
+              <div className="flex flex-col w-full col-span-1">
+                <label htmlFor="usuario" className="mb-1 text-sm font-semibold text-slate-200 text-left pl-1 w-full font-sans tracking-wide">Usuario / Correo</label>
+                <input
+                  id="usuario"
+                  type="email"
+                  value={usuario}
+                  onChange={(e) => setUsuario(e.target.value)}
+                  placeholder="ejemplo@dominio.com"
+                  required
+                  className={`input-custom text-base w-full font-sans tracking-wide transition-all duration-150 ${error ? 'border-rose-400/80 focus:border-rose-400/80 focus:ring-rose-400/30' : 'focus:border-[#8b5cf6] focus:ring-[#8b5cf6]/20'}`}
+                  style={{ minHeight: '48px' }}
+                />
+              </div>
+              {/* Contraseña */}
+              <div className="flex flex-col w-full col-span-1">
+                <label htmlFor="password" className="mb-1 text-sm font-semibold text-slate-200 text-left pl-1 w-full font-sans tracking-wide">Contraseña</label>
+                <input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  required
+                  className={`input-custom text-base w-full font-sans tracking-wide transition-all duration-150 ${error ? 'border-rose-400/80 focus:border-rose-400/80 focus:ring-rose-400/30' : 'focus:border-[#8b5cf6] focus:ring-[#8b5cf6]/20'}`}
+                  style={{ minHeight: '48px' }}
+                />
+              </div>
+              {/* Botón */}
+              <div className="md:col-span-2 flex flex-col items-center w-full">
+                <button
+                  className="btn-custom w-full md:w-1/2 mt-2 py-3 text-base font-black tracking-wide font-sans rounded-xl shadow-lg focus:outline-none focus:ring-2 focus:ring-[#facc15]/40"
+                  style={{ minHeight: '48px' }}
+                  disabled={loading}
+                >
+                  {loading ? "Entrando..." : "Acceder Ahora"}
+                </button>
+              </div>
             </form>
             <p className="mt-6 text-sm text-white">
               ¿No tienes cuenta?{" "}
