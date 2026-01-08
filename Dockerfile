@@ -25,5 +25,5 @@ COPY --from=frontend-builder /app/frontend/dist ./static
 ENV PORT=8080
 EXPOSE 8080
 
-# Comando para arrancar Uvicorn apuntando a main.py dentro de la carpeta actual
-CMD sh -c "uvicorn main:app --host 0.0.0.0 --port ${PORT}"
+# Comando para arrancar Uvicorn apuntando a backend/main.py
+CMD ["sh", "-c", "uvicorn backend.main:app --host 0.0.0.0 --port $PORT"]
