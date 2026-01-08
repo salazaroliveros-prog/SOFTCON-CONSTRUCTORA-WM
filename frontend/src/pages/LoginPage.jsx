@@ -35,7 +35,7 @@ export default function LoginPage({ onLogin }) {
       } else {
         setError("Credenciales inválidas. Verifica tu correo y contraseña.");
       }
-    } catch (err) {
+    } catch {
       setError("Error de conexión con el servidor de SOFTCON-WM.");
     } finally {
       setLoading(false);
@@ -51,7 +51,7 @@ export default function LoginPage({ onLogin }) {
       // Aquí va la lógica real de registro
       // await api.post("/auth/register", { nombre, telefono, usuario });
       setIsFlipped(false);
-    } catch (err) {
+    } catch {
       setError("Error en el registro");
     } finally {
       setLoading(false);

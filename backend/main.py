@@ -618,7 +618,11 @@ def subir_foto_bitacora(
 
 @app.post("/proyectos")
 def crear_proyecto(nombre: str, depto: str, db: Session = Depends(get_db)):
-    nuevo = models.Proyecto(nombre_proyecto=nombre, departamento=depto)
+    if not nombre or not nombre.strip():
+        raise HTTPException(status_code=400, detail="El nombre del proyecto es obligatorio.")
+    if not depto or not depto.strip():
+        raise HTTPException(status_code=400, detail="El departamento es obligatorio.")
+    nuevo = models.Proyecto(nombre_proyecto=nombre.strip(), departamento=depto.strip())
     db.add(nuevo)
     db.commit()
     return {"status": "ok"}

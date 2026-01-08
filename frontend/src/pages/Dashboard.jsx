@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Briefcase, Wallet, HardHat } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import api from "../api";
+import React from 'react';
 
 const money = (value) => {
   return new Intl.NumberFormat("es-GT", { style: "currency", currency: "GTQ" }).format(value ?? 0);

@@ -1,41 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { LayoutGrid, List, Plus, Search, HardHat, Calendar, DollarSign } from 'lucide-react';
 import api from '../api';
-// Ejemplo de formulario visualmente ordenado con Tailwind
-function FormularioEjemplo() {
-  return (
-    <div className="max-w-lg mx-auto bg-slate-900/80 p-8 rounded-2xl shadow-2xl border border-white/10 space-y-6">
-      <h2 className="text-2xl font-black text-softcon-primary mb-4">Nuevo Proyecto</h2>
-      <form className="space-y-4">
-        <div>
-          <label className="block text-sm font-bold mb-1 text-white">Nombre del Proyecto</label>
-          <input className="input-field" placeholder="Ej: Edificio Central" />
-        </div>
-        <div>
-          <label className="block text-sm font-bold mb-1 text-white">Cliente</label>
-          <input className="input-field" placeholder="Ej: SOFTCON S.A." />
-        </div>
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-bold mb-1 text-white">Presupuesto</label>
-            <input className="input-field" type="number" placeholder="GTQ" />
-          </div>
-          <div>
-            <label className="block text-sm font-bold mb-1 text-white">Fecha de Inicio</label>
-            <input className="input-field" type="date" />
-          </div>
-        </div>
-        <div className="flex gap-2 pt-2">
-          <button type="submit" className="btn-access">Crear Proyecto</button>
-          <button type="button" className="btn-secondary">Cancelar</button>
-        </div>
-      </form>
-    </div>
-  );
-}
-import React, { useState, useEffect } from 'react';
-import { LayoutGrid, List, Plus, Search, HardHat, Calendar, DollarSign } from 'lucide-react';
-import api from '../api';
 
 export default function Proyectos() {
   const [proyectos, setProyectos] = useState([]);

@@ -1,0 +1,9 @@
+[flake8]
+exclude =
+    backend/venv,
+    backend/Lib,
+    backend/Scripts,
+    frontend/node_modules,
+    .git,
+    .venv
+max-line-length = 88
