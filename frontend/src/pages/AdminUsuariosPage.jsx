@@ -44,35 +44,35 @@ export default function AdminUsuariosPage() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto">
-      <div className="flex items-center justify-between mb-6">
+    <div className="max-w-5xl mx-auto p-4 md:p-8">
+      <div className="flex items-center justify-between mb-8 border-b border-white/10 pb-6">
         <div>
-          <h1 className="text-3xl font-black text-slate-900">Usuarios pendientes</h1>
-          <p className="text-sm text-slate-500">Aprobar y asignar rol</p>
+          <h1 className="text-3xl md:text-4xl font-black text-white tracking-tight mb-1">Usuarios pendientes</h1>
+          <p className="text-slate-400 font-medium">Aprobar y asignar rol</p>
         </div>
         <button
           type="button"
           onClick={load}
-          className="px-4 py-2 rounded-xl bg-slate-900 text-white font-bold hover:bg-slate-800"
+          className="px-5 py-2.5 rounded-xl bg-yellow-400 text-slate-900 font-bold hover:bg-yellow-300 transition"
         >
           Recargar
         </button>
       </div>
 
       {error ? (
-        <div className="mb-4 p-3 rounded-xl bg-red-50 text-red-700 text-sm border border-red-200">
+        <div className="mb-4 p-3 rounded-xl bg-red-900/80 text-red-200 text-sm border border-red-400/30">
           {String(error)}
         </div>
       ) : null}
 
-      <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden">
-        <div className="p-4 border-b border-slate-200 text-sm text-slate-600">
+      <div className="bg-slate-900/80 border border-white/10 rounded-2xl overflow-hidden shadow-lg">
+        <div className="p-4 border-b border-white/10 text-sm text-slate-400">
           {loading ? 'Cargando…' : `${items.length} usuario(s) pendiente(s)`}
         </div>
 
         <div className="overflow-x-auto">
           <table className="min-w-full text-sm">
-            <thead className="bg-slate-50 text-slate-700">
+            <thead className="bg-slate-800 text-yellow-300">
               <tr>
                 <th className="text-left font-bold p-3">Usuario</th>
                 <th className="text-left font-bold p-3">Email</th>
@@ -83,13 +83,13 @@ export default function AdminUsuariosPage() {
             </thead>
             <tbody>
               {items.map((u) => (
-                <tr key={u.id} className="border-t border-slate-100">
-                  <td className="p-3 font-semibold text-slate-900">{u.username}</td>
-                  <td className="p-3 text-slate-700">{u.email}</td>
-                  <td className="p-3 text-slate-500">{u.creado_en ? new Date(u.creado_en).toLocaleString() : '—'}</td>
+                <tr key={u.id} className="border-t border-white/5 hover:bg-slate-800/40">
+                  <td className="p-3 font-semibold text-white">{u.username}</td>
+                  <td className="p-3 text-slate-300">{u.email}</td>
+                  <td className="p-3 text-slate-400">{u.creado_en ? new Date(u.creado_en).toLocaleString() : '—'}</td>
                   <td className="p-3">
                     <select
-                      className="border border-slate-300 rounded-xl px-2 py-1"
+                      className="border border-white/10 rounded-xl px-2 py-1 bg-slate-900 text-yellow-200 font-semibold"
                       defaultValue={u.rol || 'trabajador'}
                       onChange={(e) => setRole(u.id, e.target.value)}
                     >
@@ -104,7 +104,7 @@ export default function AdminUsuariosPage() {
                     <button
                       type="button"
                       onClick={() => approve(u.id)}
-                      className="px-3 py-1.5 rounded-xl bg-green-600 text-white font-bold hover:bg-green-700"
+                      className="px-4 py-1.5 rounded-xl bg-green-500 text-white font-bold hover:bg-green-400 transition"
                     >
                       Aprobar
                     </button>

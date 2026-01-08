@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
-import RegisterPage from '../pages/RegisterPage';
+import RegisterPage from '../../src/pages/RegisterPage';
 import { describe, it, expect } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
 
@@ -15,5 +15,3 @@ describe('RegisterPage', () => {
     expect(screen.getByRole('button', { name: /crear solicitud/i })).toBeInTheDocument();
   });
 });
-
-

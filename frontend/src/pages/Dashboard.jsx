@@ -37,20 +37,30 @@ export default function Dashboard() {
   }, []);
 
   return (
-    <div className="p-6 space-y-6">
-      <h1 className="text-3xl font-black text-white">SOFTCON-MYS-CONSTRU-WM</h1>
+    <div className="p-4 md:p-8 space-y-8 bg-slate-900 min-h-screen">
+      {/* Encabezado principal */}
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-white/10 pb-6 mb-6">
+        <div>
+          <h1 className="text-4xl font-black text-white tracking-tight mb-1">SOFTCON-MYS <span className="text-[#facc15]">CONSTRU-WM</span></h1>
+          <p className="text-slate-400 font-medium">CONSTRUYENDO TU FUTURO</p>
+        </div>
+      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      {/* Métricas principales */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <StatCard title="Ingresos Totales" value={money(metricas.ingresos)} />
         <StatCard title="Gastos Materiales" value={money(metricas.egresos_materiales)} tone="red" />
         <StatCard title="Utilidad Neta" value={money(metricas.utilidad_neta)} />
       </div>
 
       {/* Usuarios activos */}
-      <div className="bg-slate-900/40 p-6 rounded-2xl border border-white/10 mt-6">
-        <h2 className="text-lg font-bold mb-4">Usuarios activos (últimos 5 min)</h2>
+      <div className="bg-slate-800/80 p-6 rounded-2xl border border-white/10 mt-8 shadow-lg">
+        <h2 className="text-xl font-bold mb-4 text-white flex items-center gap-2">
+          <span>Usuarios activos</span>
+          <span className="text-xs font-normal text-slate-400">(últimos 5 min)</span>
+        </h2>
         <ul className="divide-y divide-slate-700">
-          {usuariosActivos.length === 0 && <li className="text-slate-400">Ningún usuario activo</li>}
+          {usuariosActivos.length === 0 && <li className="text-slate-400 py-2">Ningún usuario activo</li>}
           {usuariosActivos.map(u => (
             <li key={u.id} className="py-2 flex flex-col md:flex-row md:items-center md:gap-4">
               <span className="font-bold text-white">{u.nombre || u.username}</span>
@@ -62,8 +72,9 @@ export default function Dashboard() {
         </ul>
       </div>
 
-      <div className="bg-slate-900/40 p-6 rounded-2xl border border-white/10">
-        <h2 className="text-lg font-bold mb-4">Análisis de Costos vs. Ingresos</h2>
+      {/* Análisis de Costos vs. Ingresos */}
+      <div className="bg-slate-800/80 p-6 rounded-2xl border border-white/10 shadow-lg">
+        <h2 className="text-xl font-bold mb-4 text-white">Análisis de Costos vs. Ingresos</h2>
         <div className="h-[300px]">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={[]}> 

@@ -2,7 +2,7 @@ import jsPDF from "jspdf";
 import "jspdf-autotable";
 
 // Exporta el resultado de APU IA a PDF con logo y formato profesional
-default function exportAPUResultToPDF({ resultado, logoUrl }) {
+export default function exportAPUResultToPDF({ resultado, logoUrl }) {
   if (!resultado) return;
   const renglon = resultado.detalle_ok?.[0] || {};
   const apu = renglon.apu || resultado.apu || resultado.data || {};
@@ -47,4 +47,4 @@ default function exportAPUResultToPDF({ resultado, logoUrl }) {
   doc.save("APU_IA_SOFTCON.pdf");
 }
 
-export default exportAPUResultToPDF;
+

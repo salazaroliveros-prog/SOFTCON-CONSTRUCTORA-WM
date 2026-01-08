@@ -7,21 +7,26 @@ async function getCurrentUser() {
 
 
 
+
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../index.css";
 import supabase from "../supabaseClient";
 
+
 export default function LoginPage({ onLogin }) {
   const [isFlipped, setIsFlipped] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [theme, setTheme] = useState("login"); // login | register | final
+  const [showFinal, setShowFinal] = useState(false);
   const navigate = useNavigate();
 
   // Estados Formulario
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [nombre, setNombre] = useState("");
+
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -53,8 +58,16 @@ export default function LoginPage({ onLogin }) {
         options: { data: { full_name: nombre } }
       });
       if (regError) throw regError;
-      alert("Registro exitoso. Revisa tu correo o inicia sesión.");
-      setIsFlipped(false);
+      setShowFinal(true);
+      setTheme("final");
+      setTimeout(() => {
+        setShowFinal(false);
+        setTheme("login");
+        setIsFlipped(false);
+        setNombre("");
+        setEmail("");
+        setPassword("");
+      }, 1800);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -62,52 +75,84 @@ export default function LoginPage({ onLogin }) {
     }
   };
 
+  // Temas visuales
+  const themeClass = theme === "register" ? "theme-register" : theme === "final" ? "theme-final" : "";
+
   return (
-    <div className="login-page-container">
-      <div className={`card-container ${isFlipped ? "is-flipped" : ""}`}> 
+    <div className={`login-page-container ${themeClass}`} id="mainBody">
+      <div className={`card-container${isFlipped ? " is-flipped" : ""}`}> 
         <div className="card-inner">
+          {/* Watermark y logo */}
+          <div className="watermark-text">M&S</div>
+          {/* <div className="logo-watermark"></div> */}
           {/* VISTA LOGIN */}
-          <div className="card-face card-front glass-panel">
-            <h2 className="brand-title">SOFTCON-MYS</h2>
-            <p className="brand-slogan">CONSTRUYENDO TU FUTURO</p>
-            <form onSubmit={handleLogin} className="form-layout">
-              <div className="input-group">
-                <label>Correo Electrónico</label>
-                <input type="email" value={email} onChange={(e)=>setEmail(e.target.value)} required />
+          <div className="card-face face-login glass-panel">
+            <div className="flex flex-col h-full relative z-10">
+              <div className="text-center mb-8">
+                <h2 className="text-4xl font-black text-gradient mb-2 leading-tight">INGRESA</h2>
+                <div className="h-1.5 w-20 bg-[var(--primary-color)] mx-auto rounded-full shadow-lg"></div>
               </div>
-              <div className="input-group">
-                <label>Contraseña</label>
-                <input type="password" value={password} onChange={(e)=>setPassword(e.target.value)} required />
+              <form onSubmit={handleLogin} className="form-layout">
+                <div className="input-group">
+                  <label>Correo Electrónico</label>
+                  <input type="email" value={email} onChange={(e)=>setEmail(e.target.value)} required />
+                </div>
+                <div className="input-group">
+                  <label>Contraseña</label>
+                  <input type="password" value={password} onChange={(e)=>setPassword(e.target.value)} required />
+                </div>
+                {error && <p className="error-text">{error}</p>}
+                <button type="submit" className="btn-custom" disabled={loading}>
+                  {loading ? "Entrando..." : "Iniciar Sesión"}
+                </button>
+              </form>
+              <div className="mt-auto pt-6 text-center border-t border-white/20">
+                <p className="text-white text-sm">
+                  ¿No tienes cuenta? 
+                  <button onClick={() => { setIsFlipped(true); setTheme("register"); }} className="text-[var(--primary-color)] font-black hover:underline ml-1 uppercase text-xs">Regístrate</button>
+                </p>
               </div>
-              {error && <p className="error-text">{error}</p>}
-              <button type="submit" className="btn-custom" disabled={loading}>
-                {loading ? "Entrando..." : "Iniciar Sesión"}
-              </button>
-            </form>
-            <button data-testid="go-register-btn" onClick={() => setIsFlipped(true)} className="btn-link">¿No tienes cuenta? Regístrate</button>
+            </div>
           </div>
           {/* VISTA REGISTRO */}
-          <div className="card-face card-back glass-panel">
-            <h2 className="brand-title">Registro</h2>
-            <form onSubmit={handleRegister} className="form-layout">
-              <div className="input-group">
-                <label>Nombre Completo</label>
-                <input type="text" value={nombre} onChange={(e)=>setNombre(e.target.value)} required />
+          <div className="card-face face-register glass-panel">
+            <div className="flex flex-col h-full relative z-10">
+              <div className="text-center mb-4">
+                <h2 className="text-2xl font-black text-gradient uppercase italic">Registro Maestro</h2>
               </div>
-              <div className="input-group">
-                <label>Correo</label>
-                <input type="email" value={email} onChange={(e)=>setEmail(e.target.value)} required />
+              <form onSubmit={handleRegister} className="form-layout space-y-4">
+                <div className="input-group">
+                  <label>Nombre Completo</label>
+                  <input type="text" value={nombre} onChange={(e)=>setNombre(e.target.value)} required />
+                </div>
+                <div className="input-group">
+                  <label>Correo</label>
+                  <input type="email" value={email} onChange={(e)=>setEmail(e.target.value)} required />
+                </div>
+                <div className="input-group">
+                  <label>Contraseña</label>
+                  <input type="password" value={password} onChange={(e)=>setPassword(e.target.value)} required />
+                </div>
+                <button type="submit" className="btn-custom w-full mt-4" disabled={loading}>
+                  {loading ? "Procesando..." : "Finalizar Registro"}
+                </button>
+              </form>
+              <div className="text-center pt-3">
+                <button onClick={() => { setIsFlipped(false); setTheme("login"); }} className="text-white text-xs font-bold hover:underline opacity-80">
+                  ← Volver al Acceso
+                </button>
               </div>
-              <div className="input-group">
-                <label>Contraseña</label>
-                <input type="password" value={password} onChange={(e)=>setPassword(e.target.value)} required />
-              </div>
-              <button type="submit" className="btn-custom" disabled={loading}>
-                {loading ? "Procesando..." : "Crear Cuenta"}
-              </button>
-            </form>
-            <button onClick={() => setIsFlipped(false)} className="btn-link">← Volver al Acceso</button>
+            </div>
           </div>
+          {/* VISTA POST-REGISTRO (resplandor) */}
+          {showFinal && (
+            <div className="card-face face-final glass-panel" style={{zIndex: 10, pointerEvents: 'auto'}}>
+              <div className="flex flex-col h-full justify-center items-center">
+                <h2 className="text-3xl font-black text-gradient mb-4">¡Registro Exitoso!</h2>
+                <p className="text-white text-lg mb-2">Revisa tu correo para confirmar tu cuenta.</p>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

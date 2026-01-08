@@ -3,7 +3,12 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import AppShell from "./components/layout/AppShell.jsx";
 import CounterExample from "./CounterExample.jsx";
 import LoginPage from "./pages/LoginPage.jsx";
-import RegisterPage from "./pages/RegisterPage.jsx";
+import Dashboard from "./pages/Dashboard.jsx";
+import Proyectos from "./pages/Proyectos.jsx";
+import FinanzasPersonales from "./pages/FinanzasPersonales.jsx";
+import Inventarios from "./pages/Inventarios.jsx";
+import AdminUsuariosPage from "./pages/AdminUsuariosPage.jsx";
+// import RegisterPage from "./pages/RegisterPage.jsx";
 // Asegúrate de que todas las rutas existan para evitar errores de compilación
 
 function parseJwt(token) {
@@ -36,10 +41,9 @@ function App() {
   return (
     <Router>
       <Routes>
-        {/* Rutas Públicas */}
+        {/* Acceso principal con login/registro flip card */}
         <Route path="/" element={<LoginPage onLogin={() => setIsAuthenticated(true)} />} />
         <Route path="/login" element={<LoginPage onLogin={() => setIsAuthenticated(true)} />} />
-        <Route path="/register" element={<RegisterPage />} />
         {/* Ejemplo Zustand */}
         <Route path="/ejemplo-zustand" element={<CounterExample />} />
 
@@ -59,7 +63,7 @@ function App() {
               </Routes>
             </AppShell>
           ) : (
-            <Navigate to="/login" replace />
+            <Navigate to="/" replace />
           )} 
         />
 

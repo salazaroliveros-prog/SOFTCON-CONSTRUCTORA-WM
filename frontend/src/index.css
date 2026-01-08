@@ -1,3 +1,89 @@
+/* --- Temas visuales para login/registro --- */
+:root {
+  --primary-color: #facc15;
+  --secondary-color: #8b5cf6;
+  --glow-color: rgba(139, 92, 246, 0.6);
+  --bg-gradient: linear-gradient(135deg, #facc15 0%, #8b5cf6 100%);
+}
+.theme-register {
+  --primary-color: #a855f7;
+  --secondary-color: #3b82f6;
+  --glow-color: rgba(168, 85, 247, 0.6);
+  --bg-gradient: linear-gradient(135deg, #a855f7 0%, #3b82f6 100%);
+}
+.theme-final {
+  --primary-color: #facc15;
+  --secondary-color: #7c3aed;
+  --glow-color: rgba(250, 204, 21, 0.8);
+  --bg-gradient: linear-gradient(135deg, #facc15 0%, #7c3aed 100%);
+}
+
+body, .login-page-container {
+  background: #0a0a0a !important;
+  transition: background 0.8s ease;
+}
+
+/* Watermark de texto */
+.watermark-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-15deg);
+  font-size: 8rem;
+  font-weight: 900;
+  color: white;
+  opacity: 0.18;
+  z-index: 0;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+  letter-spacing: -10px;
+  filter: blur(2px);
+}
+
+/* Gradiente y resplandor animado del borde */
+.card-face::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  background: linear-gradient(45deg, var(--primary-color), #fff, var(--secondary-color));
+  background-size: 300% 300%;
+  z-index: -3;
+  border-radius: 33px;
+  animation: moveGradient 4s linear infinite;
+}
+
+@keyframes moveGradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Text gradient for titles */
+.text-gradient {
+  background: linear-gradient(to bottom, #fff 20%, var(--primary-color) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 900;
+}
+
+/* Ajuste para botón en tema registro */
+.theme-register .btn-custom { color: white; }
+
+/* Ajuste para glassmorphism y fondo de tarjetas */
+.card-face {
+  background: var(--bg-gradient) !important;
+  box-shadow: 0 0 50px var(--glow-color) !important;
+}
+
+/* Overlay oscuro para legibilidad */
+.card-face::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: -1;
+}
 /* --- LoginPage Modern Styles --- */
 .login-page-container {
   display: flex;
@@ -114,6 +200,7 @@
 .glass-panel {
   background: rgba(30,41,59,0.7);
   backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   border: 1px solid rgba(255,255,255,0.08);
   border-radius: 2rem;
   box-shadow: 0 8px 32px 0 rgba(31,38,135,0.17);
@@ -126,6 +213,7 @@
   backface-visibility: hidden;
   background: var(--bg-gradient);
   backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border-radius: 30px;
   padding: 2.2rem;
   display: flex;
@@ -300,6 +388,7 @@
     /* Si se requiere un fallback mínimo: */
     background-color: rgba(15,23,42,0.5); /* bg-slate-900/50 */
     backdrop-filter: blur(12px); /* backdrop-blur-md */
+    -webkit-backdrop-filter: blur(12px); /* backdrop-blur-md */
     border: 1px solid rgba(255,255,255,0.1); /* border-white/10 */
     border-radius: 1rem; /* rounded-2xl */
     box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1); /* shadow-xl */

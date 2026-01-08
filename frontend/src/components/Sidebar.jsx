@@ -62,16 +62,16 @@ const Sidebar = ({ open = false, onClose = () => {} }) => {
 
   const SidebarContent = (
     <div className="flex h-full flex-col">
-      <div className="mb-6 px-4 py-2">
+      <div className="mb-8 px-4 pt-6 pb-2 flex flex-col items-center">
         {logoMS ? (
-          <img src={logoMS} alt="SOFTCON-MYS" className="w-32 h-auto rounded-lg shadow-md" />
+          <img src={logoMS} alt="SOFTCON-MYS" className="w-28 h-auto rounded-xl shadow-lg mb-2" />
         ) : (
-          <h1 className="text-2xl font-black tracking-tighter text-sky-300 leading-tight">
+          <h1 className="text-2xl font-black tracking-tighter text-yellow-300 leading-tight">
             SOFTCON-MYS<br />
-            <span className="text-sky-200">CONSTRU-WM</span>
+            <span className="text-yellow-200">CONSTRU-WM</span>
           </h1>
         )}
-        <p className="text-[10px] font-bold text-slate-400 mt-2 tracking-widest uppercase">
+        <p className="text-[11px] font-bold text-slate-400 mt-1 tracking-widest uppercase">
           CONSTRUYENDO TU FUTURO
         </p>
       </div>
@@ -84,23 +84,23 @@ const Sidebar = ({ open = false, onClose = () => {} }) => {
               key={item.path}
               to={item.path}
               className={[
-                "flex items-center gap-3 p-3 rounded-lg transition-colors",
-                active ? "bg-sky-500/20 text-white border border-sky-400/20" : "hover:bg-white/5 text-slate-300",
+                "flex items-center gap-3 p-3 rounded-lg transition-colors font-semibold text-base",
+                active ? "bg-yellow-400/20 text-yellow-200 border border-yellow-300/20 shadow" : "hover:bg-white/5 text-slate-300",
               ].join(" ")}
             >
               {item.icon}
-              <span className="font-medium">{item.name}</span>
+              <span>{item.name}</span>
             </Link>
           );
         })}
       </nav>
 
-      <div className="mt-auto px-2 pb-4 pt-4">
+      <div className="mt-auto px-2 pb-6 pt-6">
         <div className="border-t border-white/10 pt-4">
           <button
             type="button"
             onClick={logout}
-            className="w-full flex items-center gap-2 text-slate-300 hover:text-white hover:bg-white/5 p-3 rounded-lg"
+            className="w-full flex items-center gap-2 text-slate-300 hover:text-yellow-200 hover:bg-yellow-400/10 p-3 rounded-lg font-semibold"
           >
             <LogOut size={18} />
             <span className="text-sm">Salir</span>
