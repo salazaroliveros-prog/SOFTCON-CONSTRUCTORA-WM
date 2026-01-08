@@ -35,13 +35,63 @@ from backend.schemas import (
 from backend.finanzas_service import calcular_balance_vida_negocio, calcular_estado_financiero_proyecto
 from backend.auth import RoleChecker, create_access_token, get_current_user, hash_password, verify_password
 from backend import models
+
+app = FastAPI()
+
+# Endpoint de salud para pruebas automatizadas
+@app.get("/health")
+def health_check():
+    return {"ok": True}
+from fastapi import Body, FastAPI, Depends, HTTPException, Request, UploadFile, File, Form, Header
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.security import OAuth2PasswordRequestForm
+from fastapi.staticfiles import StaticFiles
+from fastapi_utils.tasks import repeat_every
+from sqlalchemy import case, func
+from sqlalchemy.orm import Session
+import os
+import datetime
+import uuid
+import pathlib
+import logging
+import shutil
+from backend.database import SessionLocal, engine, get_db
+from backend.ia_auditor import (
+    calcular_consumo_materiales_por_avance,
+    obtener_teorico_disponible,
+    verificar_desviacion_presupuesto,
+)
+from backend.planilla_service import calcular_pago_semanal
+from pydantic import BaseModel, Field, AliasChoices
+from backend.ia_apu import generar_composicion_apu_ia, generar_apu_preciso_con_cantidades
+from backend.ia_service import consultar_precios_ia, generar_analisis_total
+from backend.apu_service import crear_renglon_y_composicion_desde_apu_json
+from backend.schemas import (
+    APUResponse,
+    InsumoBase,
+    ItemCompra,
+    UserCreate,
+    AsistenciaGPSRequest,
+    OrdenCompraEstadoUpdate,
+    GastoPersonalCreate,
+    Proyecto as ProyectoSchema,
+)
+from backend.finanzas_service import calcular_balance_vida_negocio, calcular_estado_financiero_proyecto
+from backend.auth import RoleChecker, create_access_token, get_current_user, hash_password, verify_password
+from backend import models
 from backend.utils.pdf_gen import generar_pdf_presupuesto, generar_pdf_presupuesto_profesional
 from backend.utils.normas import calcular_insumos_por_renglon, calcular_insumos_por_renglon_detallado
 from backend.utils.matriz_maestra import obtener_matriz_renglones_maestra
 from backend.utils.csv_import import procesar_csv_maestro
 from backend.whatsapp_service import enviar_resumen_diario
 
+
 app = FastAPI()
+
+# Endpoint de salud para pruebas automatizadas
+@app.get("/health")
+def health_check():
+    return {"ok": True}
 
 # Montar la carpeta 'public' para CSS, JS e Imágenes
 public_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'frontend', 'public'))
@@ -434,7 +484,7 @@ def registrar_gasto_personal(
 
 
 @app.get("/proyectos")
-def leer_proyectos(db: Session = Depends(get_db)) -> list[ProyectoSchema]:
+def leer_proyectos(db: Session = Depends(get_db), user: models.Usuario = Depends(get_current_user)) -> list[ProyectoSchema]:
     return db.query(models.Proyecto).all()
 
 
@@ -637,7 +687,7 @@ def subir_foto_bitacora(
     }
 
 @app.post("/proyectos")
-def crear_proyecto(nombre: str, depto: str, db: Session = Depends(get_db)):
+def crear_proyecto(nombre: str, depto: str, db: Session = Depends(get_db), user: models.Usuario = Depends(get_current_user)):
     if not nombre or not nombre.strip():
         raise HTTPException(status_code=400, detail="El nombre del proyecto es obligatorio.")
     if not depto or not depto.strip():
@@ -920,6 +970,7 @@ def crear_orden_compra(
     proyecto_id: uuid.UUID,
     items: list[ItemCompra],
     db: Session = Depends(get_db),
+    user: models.Usuario = Depends(get_current_user),
 ):
     nueva_oc = models.OrdenCompra(proyecto_id=proyecto_id)
     db.add(nueva_oc)
@@ -956,7 +1007,7 @@ def crear_orden_compra(
 
 
 @app.post("/campo/reportar-avance")
-async def reportar_avance_obra(request: Request, db: Session = Depends(get_db)):
+async def reportar_avance_obra(request: Request, db: Session = Depends(get_db), user: models.Usuario = Depends(get_current_user)):
     content_type = (request.headers.get("content-type") or "").lower()
 
     if content_type.startswith("multipart/form-data"):
@@ -1221,6 +1272,13 @@ def registrar_usuario(user: UserCreate, db: Session = Depends(get_db)):
         is_active=True,
         is_approved=False,
     )
+
+
+    # Validar unicidad de username y email
+    if db.query(models.Usuario).filter(models.Usuario.username == user.username).first():
+        raise HTTPException(status_code=409, detail="El nombre de usuario ya existe")
+    if db.query(models.Usuario).filter(models.Usuario.email == user.email).first():
+        raise HTTPException(status_code=409, detail="El email ya existe")
 
     try:
         db.add(nuevo_usuario)
