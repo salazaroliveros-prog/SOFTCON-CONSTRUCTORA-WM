@@ -10,12 +10,6 @@ import {
   X,
 } from "lucide-react";
 
-const logoModules = import.meta.glob("../assets/LOGO_CONSTRUCTORA_icono.jpg", {
-  eager: true,
-  import: "default",
-});
-const logoMS = Object.values(logoModules)[0];
-
 function isActivePath(currentPath, itemPath) {
   if (itemPath === "/") return currentPath === "/";
   return currentPath === itemPath || currentPath.startsWith(itemPath + "/");
@@ -63,14 +57,7 @@ const Sidebar = ({ open = false, onClose = () => {} }) => {
   const SidebarContent = (
     <div className="flex h-full flex-col">
       <div className="mb-8 px-4 pt-6 pb-2 flex flex-col items-center">
-        {logoMS ? (
-          <img src={logoMS} alt="SOFTCON-MYS" className="w-28 h-auto rounded-xl shadow-lg mb-2" />
-        ) : (
-          <h1 className="text-2xl font-black tracking-tighter text-yellow-300 leading-tight">
-            SOFTCON-MYS<br />
-            <span className="text-yellow-200">CONSTRU-WM</span>
-          </h1>
-        )}
+        <img src="/REDISENO_ICONO.jpg" alt="SOFTCON-MYS" className="w-28 h-auto rounded-xl shadow-lg mb-2" />
         <p className="text-[11px] font-bold text-slate-400 mt-1 tracking-widest uppercase">
           CONSTRUYENDO TU FUTURO
         </p>
