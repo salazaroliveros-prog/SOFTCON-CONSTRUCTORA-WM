@@ -42,42 +42,6 @@ app = FastAPI()
 @app.get("/health")
 def health_check():
     return {"ok": True}
-from fastapi import Body, FastAPI, Depends, HTTPException, Request, UploadFile, File, Form, Header
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.security import OAuth2PasswordRequestForm
-from fastapi.staticfiles import StaticFiles
-from fastapi_utils.tasks import repeat_every
-from sqlalchemy import case, func
-from sqlalchemy.orm import Session
-import os
-import datetime
-import uuid
-import pathlib
-import logging
-import shutil
-from backend.database import SessionLocal, engine, get_db
-from backend.ia_auditor import (
-    calcular_consumo_materiales_por_avance,
-    obtener_teorico_disponible,
-    verificar_desviacion_presupuesto,
-)
-from backend.planilla_service import calcular_pago_semanal
-from pydantic import BaseModel, Field, AliasChoices
-from backend.ia_apu import generar_composicion_apu_ia, generar_apu_preciso_con_cantidades
-from backend.ia_service import consultar_precios_ia, generar_analisis_total
-from backend.apu_service import crear_renglon_y_composicion_desde_apu_json
-from backend.schemas import (
-    APUResponse,
-    InsumoBase,
-    ItemCompra,
-    UserCreate,
-    AsistenciaGPSRequest,
-    OrdenCompraEstadoUpdate,
-    GastoPersonalCreate,
-    Proyecto as ProyectoSchema,
-)
-from backend.finanzas_service import calcular_balance_vida_negocio, calcular_estado_financiero_proyecto
-from backend.auth import RoleChecker, create_access_token, get_current_user, hash_password, verify_password
 from backend import models
 from backend.utils.pdf_gen import generar_pdf_presupuesto, generar_pdf_presupuesto_profesional
 from backend.utils.normas import calcular_insumos_por_renglon, calcular_insumos_por_renglon_detallado
@@ -244,7 +208,12 @@ def cron_whatsapp_resumen_diario(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "https://softcon-constructora-wm.vercel.app", # Agrega tu URL de Vercel aquí
+        "http://localhost:5173",          # Para pruebas locales
+        "http://localhost:5174",          # Para pruebas locales
+    ],
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
