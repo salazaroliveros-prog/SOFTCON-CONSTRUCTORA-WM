@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import api from '../api/client.js';
 
@@ -28,72 +29,46 @@ export default function Aprobaciones() {
   };
 
   return (
-    <div style={{ padding: '24px 40px' }}>
-      <h2 style={{ fontSize: '22px', fontWeight: 900, marginBottom: '12px', color: '#2d3748' }}>
-        Órdenes de Compra por Autorizar
-      </h2>
-
+    <div className="px-10 py-6">
+      <h2 className="text-2xl font-black mb-3 text-slate-800">Órdenes de Compra por Autorizar</h2>
       {status && (
-        <p style={{ marginBottom: '10px', color: status.startsWith('Error') ? '#e53e3e' : '#2f855a' }}>{status}</p>
+        <p className={`mb-2 font-bold ${status.startsWith('Error') ? 'text-red-600' : 'text-green-600'}`}>{status}</p>
       )}
-
-      <div style={{ background: '#fff', borderRadius: '12px', overflow: 'hidden', boxShadow: '0 2px 4px rgba(0,0,0,0.06)' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-          <thead style={{ background: '#2d3748', color: '#fff' }}>
+      <div className="bg-white rounded-xl overflow-hidden shadow-md">
+        <table className="w-full border-collapse">
+          <thead className="bg-slate-800 text-white">
             <tr>
-              <th style={{ padding: '12px', textAlign: 'left' }}>Proyecto</th>
-              <th style={{ padding: '12px', textAlign: 'left' }}>Proveedor</th>
-              <th style={{ padding: '12px', textAlign: 'right' }}>Monto</th>
-              <th style={{ padding: '12px', textAlign: 'center' }}>Acciones</th>
+              <th className="p-3 text-left">Proyecto</th>
+              <th className="p-3 text-left">Proveedor</th>
+              <th className="p-3 text-right">Monto</th>
+              <th className="p-3 text-center">Acciones</th>
             </tr>
           </thead>
           <tbody>
             {pendientes.map((oc) => (
-              <tr key={oc.id} style={{ borderBottom: '1px solid #edf2f7' }}>
-                <td style={{ padding: '12px' }}>{oc.nombre_proyecto || oc.proyecto_id}</td>
-                <td style={{ padding: '12px' }}>{oc.proveedor || '-'}</td>
-                <td style={{ padding: '12px', textAlign: 'right', fontWeight: 900, color: '#e53e3e' }}>
-                  Q{Number(oc.total || 0).toFixed(2)}
-                </td>
-                <td style={{ padding: '12px', textAlign: 'center' }}>
+              <tr key={oc.id} className="border-b border-slate-200">
+                <td className="p-3">{oc.nombre_proyecto || oc.proyecto_id}</td>
+                <td className="p-3">{oc.proveedor || '-'}</td>
+                <td className="p-3 text-right font-black text-red-500">Q{Number(oc.total || 0).toFixed(2)}</td>
+                <td className="p-3 text-center">
                   <button
                     onClick={() => manejarDecision(oc.id, 'aprobada')}
-                    style={{
-                      background: '#2f855a',
-                      color: '#fff',
-                      padding: '8px 10px',
-                      borderRadius: '8px',
-                      border: 'none',
-                      fontWeight: 800,
-                      marginRight: '8px',
-                      cursor: 'pointer',
-                    }}
+                    className="bg-green-600 text-white px-3 py-2 rounded-lg font-black mr-2 hover:bg-green-700 transition"
                   >
                     Aprobar
                   </button>
                   <button
                     onClick={() => manejarDecision(oc.id, 'rechazada')}
-                    style={{
-                      background: '#c53030',
-                      color: '#fff',
-                      padding: '8px 10px',
-                      borderRadius: '8px',
-                      border: 'none',
-                      fontWeight: 800,
-                      cursor: 'pointer',
-                    }}
+                    className="bg-red-600 text-white px-3 py-2 rounded-lg font-black hover:bg-red-700 transition"
                   >
                     Rechazar
                   </button>
                 </td>
               </tr>
             ))}
-
             {pendientes.length === 0 && (
               <tr>
-                <td colSpan={4} style={{ padding: '14px', color: '#718096' }}>
-                  No hay órdenes pendientes.
-                </td>
+                <td colSpan={4} className="p-4 text-slate-400">No hay órdenes pendientes.</td>
               </tr>
             )}
           </tbody>

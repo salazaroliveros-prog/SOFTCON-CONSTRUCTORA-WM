@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { LayoutGrid, List, Plus, Search, HardHat, Calendar, DollarSign } from 'lucide-react';
+import ChartBar from '../components/ChartBar';
 import api from '../api';
 import { proyectosApi } from '../api/services';
 import APUResultCard from '../components/APUResultCard';
@@ -8,6 +9,16 @@ import APUResultCard from '../components/APUResultCard';
 
 
 export default function Proyectos() {
+    // Gráfico: presupuesto por estado
+    const chartData = React.useMemo(() => {
+      if (!proyectos.length) return [];
+      const resumen = {};
+      proyectos.forEach(p => {
+        if (!resumen[p.estado]) resumen[p.estado] = 0;
+        resumen[p.estado] += Number(p.presupuesto || 0);
+      });
+      return Object.entries(resumen).map(([estado, monto]) => ({ estado, monto }));
+    }, [proyectos]);
   const [proyectos, setProyectos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState('grid'); // 'grid' o 'list'
@@ -48,6 +59,18 @@ export default function Proyectos() {
 
   return (
     <div className="space-y-8 p-4 md:p-8">
+      {/* Gráfico de presupuesto por estado */}
+      {chartData.length > 0 && (
+        <div className="bg-slate-900/80 rounded-2xl shadow-lg p-6 border border-white/10 max-w-xl mx-auto">
+          <h3 className="text-lg font-bold text-yellow-300 mb-4">Presupuesto por Estado</h3>
+          <ChartBar
+            data={chartData}
+            xKey="estado"
+            bars={[{ key: "monto", color: "#facc15", label: "Presupuesto" }]}
+            height={180}
+          />
+        </div>
+      )}
       {/* Encabezado Principal */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/10 pb-6">
         <div>

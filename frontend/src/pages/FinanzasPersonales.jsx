@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { PlusCircle, Wallet } from 'lucide-react';
+import ChartBar from '../components/ChartBar';
 import { finanzasPersonalesApi } from '../api/endpoints';
 import FormularioGastoPersonal from './FormularioGastoPersonal.jsx';
 
@@ -82,6 +83,21 @@ export default function FinanzasPersonales() {
           </p>
         </div>
         <Wallet size={48} className="text-yellow-400 opacity-60" />
+      </div>
+      {/* Gráfico de gastos por categoría */}
+      <div className="bg-slate-900/80 rounded-xl shadow-lg mb-8 p-6 border border-white/10">
+        <h3 className="text-lg font-bold text-yellow-300 mb-4">Gastos por Categoría</h3>
+        <ChartBar
+          data={gastosTabla.reduce((acc, g) => {
+            const found = acc.find(a => a.cat === g.cat);
+            if (found) { found.monto += g.monto; }
+            else { acc.push({ cat: g.cat, monto: g.monto }); }
+            return acc;
+          }, [])}
+          xKey="cat"
+          bars={[{ key: "monto", color: "#f56565", label: "Monto" }]}
+          height={220}
+        />
       </div>
 
       <div className="bg-slate-900/80 rounded-xl shadow-lg overflow-hidden border border-white/10">

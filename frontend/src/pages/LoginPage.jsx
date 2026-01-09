@@ -38,6 +38,11 @@ export default function LoginPage({ onLogin }) {
         password: password,
       });
       if (loginError) throw loginError;
+      // Guardar el token de sesión de Supabase en localStorage como 'token'
+      const session = data.session || (await supabase.auth.getSession()).data.session;
+      if (session && session.access_token) {
+        localStorage.setItem("token", session.access_token);
+      }
       onLogin(data.user);
       navigate("/dashboard");
     } catch (err) {
@@ -79,12 +84,11 @@ export default function LoginPage({ onLogin }) {
   const themeClass = theme === "register" ? "theme-register" : theme === "final" ? "theme-final" : "";
 
   return (
-    <div className={`login-page-container ${themeClass}`} id="mainBody">
-      <div className={`card-container${isFlipped ? " is-flipped" : ""}`}> 
+    <div className={`login-page-container ${themeClass} flex items-center justify-center min-h-screen`} id="mainBody">
+      <div className={`card-container${isFlipped ? " is-flipped" : ""} w-full max-w-md relative`}> 
         <div className="card-inner">
           {/* Watermark y logo */}
           <div className="watermark-text">M&S</div>
-          {/* <div className="logo-watermark"></div> */}
           {/* VISTA LOGIN */}
           <div className="card-face face-login glass-panel">
             <div className="flex flex-col h-full relative z-10">
@@ -92,24 +96,24 @@ export default function LoginPage({ onLogin }) {
                 <h2 className="text-4xl font-black text-gradient mb-2 leading-tight">INGRESA</h2>
                 <div className="h-1.5 w-20 bg-[var(--primary-color)] mx-auto rounded-full shadow-lg"></div>
               </div>
-              <form onSubmit={handleLogin} className="form-layout">
-                <div className="input-group">
-                  <label>Correo Electrónico</label>
-                  <input type="email" value={email} onChange={(e)=>setEmail(e.target.value)} required />
+              <form onSubmit={handleLogin} className="flex flex-col gap-5">
+                <div className="flex flex-col gap-1">
+                  <label className="text-xs font-semibold text-slate-300">Correo Electrónico</label>
+                  <input type="email" value={email} onChange={(e)=>setEmail(e.target.value)} required className="rounded-lg px-3 py-2 bg-slate-800 text-white border border-slate-700 focus:outline-none focus:ring-2 focus:ring-yellow-400" />
                 </div>
-                <div className="input-group">
-                  <label>Contraseña</label>
-                  <input type="password" value={password} onChange={(e)=>setPassword(e.target.value)} required />
+                <div className="flex flex-col gap-1">
+                  <label className="text-xs font-semibold text-slate-300">Contraseña</label>
+                  <input type="password" value={password} onChange={(e)=>setPassword(e.target.value)} required className="rounded-lg px-3 py-2 bg-slate-800 text-white border border-slate-700 focus:outline-none focus:ring-2 focus:ring-yellow-400" />
                 </div>
-                {error && <p className="error-text">{error}</p>}
-                <button type="submit" className="btn-custom" disabled={loading}>
+                {error && <p className="text-red-400 text-xs font-bold mt-1">{error}</p>}
+                <button type="submit" className="bg-yellow-400 text-slate-900 font-black py-2 rounded-lg hover:bg-yellow-300 transition" disabled={loading}>
                   {loading ? "Entrando..." : "Iniciar Sesión"}
                 </button>
               </form>
               <div className="mt-auto pt-6 text-center border-t border-white/20">
                 <p className="text-white text-sm">
                   ¿No tienes cuenta? 
-                  <button onClick={() => { setIsFlipped(true); setTheme("register"); }} className="text-[var(--primary-color)] font-black hover:underline ml-1 uppercase text-xs">Regístrate</button>
+                  <button data-testid="go-register-btn" onClick={() => { setIsFlipped(true); setTheme("register"); }} className="text-yellow-400 font-black hover:underline ml-1 uppercase text-xs">Regístrate</button>
                 </p>
               </div>
             </div>
@@ -120,20 +124,20 @@ export default function LoginPage({ onLogin }) {
               <div className="text-center mb-4">
                 <h2 className="text-2xl font-black text-gradient uppercase italic">Registro Maestro</h2>
               </div>
-              <form onSubmit={handleRegister} className="form-layout space-y-4">
-                <div className="input-group">
-                  <label>Nombre Completo</label>
-                  <input type="text" value={nombre} onChange={(e)=>setNombre(e.target.value)} required />
+              <form onSubmit={handleRegister} className="flex flex-col gap-5">
+                <div className="flex flex-col gap-1">
+                  <label className="text-xs font-semibold text-slate-300">Nombre Completo</label>
+                  <input type="text" value={nombre} onChange={(e)=>setNombre(e.target.value)} required className="rounded-lg px-3 py-2 bg-slate-800 text-white border border-slate-700 focus:outline-none focus:ring-2 focus:ring-violet-400" />
                 </div>
-                <div className="input-group">
-                  <label>Correo</label>
-                  <input type="email" value={email} onChange={(e)=>setEmail(e.target.value)} required />
+                <div className="flex flex-col gap-1">
+                  <label className="text-xs font-semibold text-slate-300">Correo</label>
+                  <input type="email" value={email} onChange={(e)=>setEmail(e.target.value)} required className="rounded-lg px-3 py-2 bg-slate-800 text-white border border-slate-700 focus:outline-none focus:ring-2 focus:ring-violet-400" />
                 </div>
-                <div className="input-group">
-                  <label>Contraseña</label>
-                  <input type="password" value={password} onChange={(e)=>setPassword(e.target.value)} required />
+                <div className="flex flex-col gap-1">
+                  <label className="text-xs font-semibold text-slate-300">Contraseña</label>
+                  <input type="password" value={password} onChange={(e)=>setPassword(e.target.value)} required className="rounded-lg px-3 py-2 bg-slate-800 text-white border border-slate-700 focus:outline-none focus:ring-2 focus:ring-violet-400" />
                 </div>
-                <button type="submit" className="btn-custom w-full mt-4" disabled={loading}>
+                <button type="submit" className="bg-violet-500 text-white font-black py-2 rounded-lg hover:bg-violet-400 transition mt-2" disabled={loading}>
                   {loading ? "Procesando..." : "Finalizar Registro"}
                 </button>
               </form>
@@ -146,7 +150,7 @@ export default function LoginPage({ onLogin }) {
           </div>
           {/* VISTA POST-REGISTRO (resplandor) */}
           {showFinal && (
-            <div className="card-face face-final glass-panel" style={{zIndex: 10, pointerEvents: 'auto'}}>
+            <div className="card-face face-final glass-panel z-10 pointer-events-auto">
               <div className="flex flex-col h-full justify-center items-center">
                 <h2 className="text-3xl font-black text-gradient mb-4">¡Registro Exitoso!</h2>
                 <p className="text-white text-lg mb-2">Revisa tu correo para confirmar tu cuenta.</p>

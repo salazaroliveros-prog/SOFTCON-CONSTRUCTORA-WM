@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from "react";
 import { Briefcase, Wallet, HardHat } from "lucide-react";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import ChartBar from "../components/ChartBar";
 import api from "../api";
 import supabase from "../supabaseClient";
 
@@ -37,7 +37,7 @@ export default function Dashboard() {
   }, []);
 
   return (
-    <div className="p-4 md:p-8 space-y-8 bg-slate-900 min-h-screen">
+    <div data-testid="dashboard" className="p-4 md:p-8 space-y-8 bg-slate-900 min-h-screen">
       {/* Encabezado principal */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-white/10 pb-6 mb-6">
         <div>
@@ -76,16 +76,12 @@ export default function Dashboard() {
       <div className="bg-slate-800/80 p-6 rounded-2xl border border-white/10 shadow-lg">
         <h2 className="text-xl font-bold mb-4 text-white">Análisis de Costos vs. Ingresos</h2>
         <div className="h-[300px]">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={[]}> 
-              <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-              <Bar dataKey="ingreso" fill="#facc15" />
-              <Bar dataKey="costo" fill="#8b5cf6" />
-            </BarChart>
-          </ResponsiveContainer>
+          <ChartBar
+            data={[]}
+            xKey="name"
+            bars={[{ key: "ingreso", color: "#facc15", label: "Ingreso" }, { key: "costo", color: "#8b5cf6", label: "Costo" }]}
+            height={300}
+          />
         </div>
       </div>
     </div>
